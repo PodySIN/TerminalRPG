@@ -1,0 +1,41 @@
+#include "effect_manager.hpp"
+#include "actor.hpp"
+#include "effects.hpp"
+#include "random.hpp"
+
+rpg::EffectManager::EffectManager(Actor* owner) : owner_(owner), effects_(5)
+{
+}
+
+void rpg::EffectManager::addEffect(std::unique_ptr< Effect > effect)
+{
+  if (owner_->getActorType() == effect->getActorType()) {
+    if (Random::getFloat(0.0f, 1.0f) > effect->getApplyChance()) {
+      return;
+    }
+  } else {
+    float resistance = owner_->getStats().getEffectResistance().getBase();
+    float chance = effect->getApplyChance() * (1 - resistance);
+    if (Random::getFloat(0.0f, 1.0f) > chance) {
+      return;
+    }
+  }
+  effect->onApply(owner_);
+  effects_.push_back(std::move(effect));
+}
+
+void rpg::EffectManager::update()
+{
+  for (size_t i = 0; i < effects_.size();) {
+    effects_[i]->onTick(owner_);
+    if (effects_[i]->isExpired()) {
+      effects_[i]->onRemove(owner_);
+      if (i != effects_.size() - 1) {
+        effects_[i] = std::move(effects_.back());
+      }
+      effects_.pop_back();
+    } else {
+      i++;
+    }
+  }
+}

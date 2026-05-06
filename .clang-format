@@ -1,0 +1,33 @@
+BasedOnStyle: LLVM
+IndentWidth: 2
+ColumnLimit: 80
+UseTab: Never
+TabWidth: 2
+PointerAlignment: Left
+
+ConstructorInitializerIndentWidth: 2
+
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterFunction: true
+  AfterClass: false
+  AfterControlStatement: false
+  AfterEnum: false
+  AfterNamespace: false
+  AfterStruct: false
+  BeforeCatch: false
+  BeforeElse: false
+
+IndentCaseLabels: true
+NamespaceIndentation: All
+
+AllowShortFunctionsOnASingleLine: None
+AllowShortEnumsOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+BreakConstructorInitializers: AfterColon
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+SpacesInAngles: true
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: false
