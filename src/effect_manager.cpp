@@ -3,20 +3,20 @@
 #include "effects.hpp"
 #include "random.hpp"
 
-rpg::EffectManager::EffectManager(Actor* owner) : owner_(owner), effects_(5)
+rpg::EffectManager::EffectManager(Actor* owner) : owner_(owner)
 {
 }
 
 void rpg::EffectManager::addEffect(std::unique_ptr< Effect > effect)
 {
-  if (owner_->getActorType() == effect->getActorType()) {
-    if (Random::getFloat(0.0f, 1.0f) > effect->getApplyChance()) {
-      return;
-    }
-  } else {
+  if (effect->isHarmful()) {
     float resistance = owner_->getStats().getEffectResistance().getBase();
     float chance = effect->getApplyChance() * (1 - resistance);
     if (Random::getFloat(0.0f, 1.0f) > chance) {
+      return;
+    }
+  } else {
+    if (Random::getFloat(0.0f, 1.0f) > effect->getApplyChance()) {
       return;
     }
   }

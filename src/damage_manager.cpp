@@ -10,16 +10,17 @@ rpg::DamageManager::DamageManager(Actor* owner) : owner_(owner)
 float rpg::DamageManager::calculateDodgeChance()
 {
   float evasion = owner_->getStats().getEvasion().getTotal();
-  return evasion / (evasion + 300.0f);
+  return evasion / (evasion + 100.0f);
 }
 
-void rpg::DamageManager::handleAttack(std::pair< float, DamageType >& attack)
+bool rpg::DamageManager::handleAttack(std::pair< float, DamageType >& attack)
 {
-  if (Random::getFloat(0.0f, 1.0f) > calculateDodgeChance()) {
-    return;
+  if (Random::getFloat(0.0f, 1.0f) < calculateDodgeChance()) {
+    return false;
   }
   float damage = calculateInputDamage(attack);
   takeDamage(damage);
+  return true;
 }
 
 float rpg::DamageManager::calculateInputDamage(
@@ -46,7 +47,7 @@ rpg::DamageManager::calculateOutputDamage(AttackSkill* skill)
 {
   float damage = 0.0f;
   switch (skill->getScaleType()) {
-    case ScaleType::Attack:
+    case ScaleType::Damage:
       damage = owner_->getStats().getDamage().getTotal();
       break;
     case ScaleType::Health:
@@ -72,6 +73,7 @@ rpg::DamageManager::calculateOutputDamage(AttackSkill* skill)
 void rpg::DamageManager::takeDamage(float damage)
 {
   if (owner_->getStats().getCurrentHealth() - damage <= 0) {
+    owner_->getStats().getCurrentHealth() = 0;
     owner_->die();
     return;
   }

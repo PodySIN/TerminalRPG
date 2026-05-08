@@ -12,8 +12,8 @@ namespace rpg {
       config.speed = 80.0f;
       config.crit_chance = 0.05f;
       config.crit_damage = 1.0f;
-      config.evasion = 0.0f;
-      config.damage_bonus = 0.0f;
+      config.evasion = 5.0f;
+      config.damage_bonus = 1.0f;
       config.damage_reduction = 0.0f;
       config.effect_resistance = 0.0f;
       config.actor_type = ActorType::Hero;
@@ -31,7 +31,7 @@ namespace rpg {
       config.crit_chance = 0.05f;
       config.crit_damage = 1.0f;
       config.evasion = 0.0f;
-      config.damage_bonus = 0.0f;
+      config.damage_bonus = 1.0f;
       config.damage_reduction = 0.0f;
       config.effect_resistance = 0.0f;
       config.actor_type = ActorType::Hero;
@@ -49,7 +49,7 @@ namespace rpg {
       config.crit_chance = 0.05f;
       config.crit_damage = 1.0f;
       config.evasion = 0.0f;
-      config.damage_bonus = 0.0f;
+      config.damage_bonus = 1.0f;
       config.damage_reduction = 0.0f;
       config.effect_resistance = 0.0f;
       config.actor_type = ActorType::Hero;

@@ -7,7 +7,6 @@ namespace rpg {
   class Knight : public Hero {
   public:
     Knight();
-    void die() override;
 
   private:
   };

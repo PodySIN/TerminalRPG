@@ -3,28 +3,31 @@
 
 #include "types.hpp"
 #include <cstddef>
+#include <memory>
 
 namespace rpg {
   class Actor;
   class Effect {
   public:
+    Effect(EffectType type, size_t duration, float apply_chance_);
     virtual ~Effect() = default;
     void onApply(Actor* owner);
     void onTick(Actor* owner);
     void onRemove(Actor* owner);
     ActorType getActorType() const;
     bool isExpired() const;
+    virtual bool isHarmful() const = 0;
     float getDuration() const;
     float getApplyChance() const;
+    virtual std::unique_ptr< Effect > clone() const = 0;
 
   protected:
     void reduceDuration();
 
   private:
     EffectType type_;
-    size_t duration_;
-    float apply_chance_;
-    ActorType actor_type_;
+    size_t duration_ = 3;
+    float apply_chance_ = 1.0f;
 
     virtual void doOnApply(Actor* owner) = 0;
     virtual void doOnTick(Actor* owner) = 0;
@@ -32,8 +35,30 @@ namespace rpg {
   };
 
   class NailingEffect : public Effect {
+  public:
+    NailingEffect(size_t duration, float apply_chance, float evasion_reduction);
+    NailingEffect();
+    bool isHarmful() const override;
+    std::unique_ptr< Effect > clone() const override;
+
   private:
-    float evasion_reduction_;
+    float evasion_reduction_ = 20.0f;
+    void doOnApply(Actor* owner) override;
+    void doOnTick(Actor* owner) override;
+    void doOnRemove(Actor* owner) override;
+  };
+
+  class BleedingEffect : public Effect {
+  public:
+    BleedingEffect(size_t duration, float apply_chance,
+                   float percetage_damage_per_move, float flat_damage_per_move);
+    BleedingEffect();
+    bool isHarmful() const override;
+    std::unique_ptr< Effect > clone() const override;
+
+  private:
+    float percetage_damage_per_move_ = 2.0f;
+    float flat_damage_per_move_ = 10.0f;
     void doOnApply(Actor* owner) override;
     void doOnTick(Actor* owner) override;
     void doOnRemove(Actor* owner) override;

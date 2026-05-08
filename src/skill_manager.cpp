@@ -15,11 +15,11 @@ void rpg::SkillManager::useSkill(size_t id, std::vector< Actor* > targets) const
   skills_[id]->processSkill(owner_, targets);
 }
 
-rpg::SkillManager::SkillManager(Actor* owner) : owner_(owner), skills_(5)
+rpg::SkillManager::SkillManager(Actor* owner) : owner_(owner)
 {
 }
 
-void rpg::SkillManager::addSkill(Skill* skill)
+void rpg::SkillManager::addSkill(std::unique_ptr< Skill > skill)
 {
-  skills_.push_back(skill);
+  skills_.push_back(std::move(skill));
 }

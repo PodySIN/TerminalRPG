@@ -10,7 +10,7 @@ namespace rpg {
   public:
     DamageManager(Actor* owner);
     std::pair< float, DamageType > calculateOutputDamage(AttackSkill* skill);
-    void handleAttack(std::pair< float, DamageType >& attack);
+    bool handleAttack(std::pair< float, DamageType >& attack);
     float calculateInputDamage(std::pair< float, DamageType >& attack);
 
     float calculateDodgeChance();

@@ -3,6 +3,7 @@
 
 #include "skills.hpp"
 #include <cstddef>
+#include <memory>
 
 namespace rpg {
   class Actor;
@@ -12,11 +13,11 @@ namespace rpg {
     void useSkill(size_t id) const;
     void useSkill(size_t id, Actor* target) const;
     void useSkill(size_t id, std::vector< Actor* > targets) const;
-    void addSkill(Skill* skill);
+    void addSkill(std::unique_ptr< Skill > skill);
 
   private:
     Actor* owner_;
-    std::vector< Skill* > skills_;
+    std::vector< std::unique_ptr< Skill > > skills_;
   };
 
 } // namespace rpg

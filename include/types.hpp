@@ -8,7 +8,7 @@ namespace rpg {
     Npc
   };
   enum class ScaleType {
-    Attack,
+    Damage,
     Health,
     Defense,
     Resource
@@ -25,7 +25,8 @@ namespace rpg {
     Stunned,
     Blinded,
     Accurate,
-    Nailing
+    Nailing,
+    Bleeding
   };
 } // namespace rpg
 

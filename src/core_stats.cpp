@@ -2,7 +2,7 @@
 
 float rpg::ComplexStat::getTotal() const
 {
-  return ((base_ + flat_) * multiply_) + amplify_;
+  return ((base_ + flat_) * multiply_) * amplify_;
 }
 
 float rpg::BaseStat::getBase() const

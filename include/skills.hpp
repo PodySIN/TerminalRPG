@@ -1,13 +1,13 @@
 #ifndef SKILLS_HPP
 #define SKILLS_HPP
 
+#include "effects.hpp"
 #include "types.hpp"
 #include <string>
 #include <vector>
 
 namespace rpg {
   class Actor;
-  class Effect;
 
   class Skill {
   public:
@@ -42,6 +42,15 @@ namespace rpg {
     KnightSlash();
 
   private:
+    void doProcessSkill(Actor* owner, Actor* target) override;
+  };
+
+  class SavageSlash : public AttackSkill {
+  public:
+    SavageSlash();
+
+  private:
+    std::unique_ptr< Effect > effect_;
     void doProcessSkill(Actor* owner, Actor* target) override;
   };
 
