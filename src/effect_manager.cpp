@@ -2,6 +2,7 @@
 #include "actor.hpp"
 #include "effects.hpp"
 #include "random.hpp"
+#include <memory>
 
 rpg::EffectManager::EffectManager(Actor* owner) : owner_(owner)
 {
@@ -38,4 +39,15 @@ void rpg::EffectManager::update()
       i++;
     }
   }
+}
+
+std::unique_ptr< rpg::Effect >
+rpg::EffectManager::isActorHasEffect(EffectType type) const
+{
+  for (const auto& effect : effects_) {
+    if (effect->getEffectType() == type) {
+      return std::unique_ptr< Effect >(effect.get());
+    }
+  }
+  return nullptr;
 }

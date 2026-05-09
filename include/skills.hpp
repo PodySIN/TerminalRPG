@@ -37,9 +37,21 @@ namespace rpg {
     ScaleType scale_type_;
   };
 
-  class KnightSlash : public AttackSkill {
+  class BaseAttack : public AttackSkill {
   public:
-    KnightSlash();
+    BaseAttack(float damage_multiplier, float flat_damage,
+               DamageType damage_type, ScaleType scale_type);
+    BaseAttack();
+
+  private:
+    void doProcessSkill(Actor* owner, Actor* target) override;
+  };
+
+  class ParryAttack : public AttackSkill {
+  public:
+    ParryAttack();
+    ParryAttack(float damage_multiplier, ScaleType scale_type,
+                DamageType damage_type);
 
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
@@ -51,6 +63,15 @@ namespace rpg {
 
   private:
     std::unique_ptr< Effect > effect_;
+    void doProcessSkill(Actor* owner, Actor* target) override;
+  };
+
+  class GuardianShield : public Skill {
+    GuardianShield();
+
+  private:
+    std::unique_ptr< Effect > parry_effect_;
+    std::unique_ptr< Effect > block_damage_buff_effect_;
     void doProcessSkill(Actor* owner, Actor* target) override;
   };
 

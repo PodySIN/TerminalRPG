@@ -1,7 +1,9 @@
 #include "damage_manager.hpp"
 #include "actor.hpp"
 #include "core_stats.hpp"
+#include "effects.hpp"
 #include "random.hpp"
+#include <memory>
 
 rpg::DamageManager::DamageManager(Actor* owner) : owner_(owner)
 {
@@ -13,12 +15,22 @@ float rpg::DamageManager::calculateDodgeChance()
   return evasion / (evasion + 100.0f);
 }
 
-bool rpg::DamageManager::handleAttack(std::pair< float, DamageType >& attack)
+bool rpg::DamageManager::handleAttack(std::pair< float, DamageType >& attack,
+                                      Actor* attacker)
 {
   if (Random::getFloat(0.0f, 1.0f) < calculateDodgeChance()) {
     return false;
   }
   float damage = calculateInputDamage(attack);
+  std::unique_ptr< Effect > effect =
+      owner_->getEffectManager().isActorHasEffect(EffectType::Parry);
+  if (effect) {
+    ParryEffect* parry_effect = dynamic_cast< ParryEffect* >(effect.get());
+    if (Random::getFloat(0.0f, 1.0f) < parry_effect->getParryChance()) {
+      damage -= owner_->getStats().getBlockDamage().getBase();
+      owner_->getSkillManager().useSkill(0, attacker);
+    }
+  }
   takeDamage(damage);
   return true;
 }

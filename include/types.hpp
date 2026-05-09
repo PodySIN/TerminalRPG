@@ -26,7 +26,8 @@ namespace rpg {
     Blinded,
     Accurate,
     Nailing,
-    Bleeding
+    Bleeding,
+    Parry
   };
 } // namespace rpg
 

@@ -13,6 +13,7 @@ namespace rpg {
     EffectManager(Actor* owner);
     void addEffect(std::unique_ptr< Effect > effect);
     void update();
+    std::unique_ptr< Effect > isActorHasEffect(EffectType type) const;
 
   private:
     Actor* owner_;

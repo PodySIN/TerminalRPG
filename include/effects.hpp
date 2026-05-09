@@ -14,12 +14,12 @@ namespace rpg {
     void onApply(Actor* owner);
     void onTick(Actor* owner);
     void onRemove(Actor* owner);
-    ActorType getActorType() const;
     bool isExpired() const;
     virtual bool isHarmful() const = 0;
     float getDuration() const;
     float getApplyChance() const;
     virtual std::unique_ptr< Effect > clone() const = 0;
+    EffectType getEffectType() const;
 
   protected:
     void reduceDuration();
@@ -59,6 +59,38 @@ namespace rpg {
   private:
     float percetage_damage_per_move_ = 2.0f;
     float flat_damage_per_move_ = 10.0f;
+    void doOnApply(Actor* owner) override;
+    void doOnTick(Actor* owner) override;
+    void doOnRemove(Actor* owner) override;
+  };
+
+  class ParryEffect : public Effect {
+  public:
+    ParryEffect(size_t duration, float apply_chance, float parry_chance,
+                float parry_damage_multiplier);
+    ParryEffect();
+    bool isHarmful() const override;
+    std::unique_ptr< Effect > clone() const override;
+    float getParryChance() const;
+
+  private:
+    float parry_chance_;
+    float parry_damage_multiplier_;
+    void doOnApply(Actor* owner) override;
+    void doOnTick(Actor* owner) override;
+    void doOnRemove(Actor* owner) override;
+  };
+
+  class BlockDamageBuffEffect : public Effect {
+  public:
+    BlockDamageBuffEffect(size_t duration, float apply_chance, float buff);
+    BlockDamageBuffEffect();
+    bool isHarmful() const override;
+    std::unique_ptr< Effect > clone() const override;
+    float getBlockDamageBuff() const;
+
+  private:
+    float block_damage_buff_;
     void doOnApply(Actor* owner) override;
     void doOnTick(Actor* owner) override;
     void doOnRemove(Actor* owner) override;

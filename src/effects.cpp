@@ -1,5 +1,6 @@
 #include "effects.hpp"
 #include "actor.hpp"
+#include <memory>
 
 rpg::Effect::Effect(EffectType type, size_t duration, float apply_chance) :
   type_(type), duration_(duration), apply_chance_(apply_chance)
@@ -32,6 +33,11 @@ void rpg::Effect::reduceDuration()
   if (duration_ > 0) {
     duration_--;
   }
+}
+
+rpg::EffectType rpg::Effect::getEffectType() const
+{
+  return type_;
 }
 
 float rpg::Effect::getDuration() const
@@ -119,4 +125,90 @@ void rpg::BleedingEffect::doOnTick(Actor* owner)
 void rpg::BleedingEffect::doOnRemove(Actor* owner)
 {
   return;
+}
+
+rpg::ParryEffect::ParryEffect(size_t duration, float apply_chance,
+                              float parry_chance,
+                              float parry_damage_multiplier) :
+  Effect(EffectType::Parry, duration, apply_chance),
+  parry_chance_(parry_chance),
+  parry_damage_multiplier_(parry_damage_multiplier)
+{
+}
+
+rpg::ParryEffect::ParryEffect() : rpg::ParryEffect(3, 1.0f, 0.5f, 0.75f)
+{
+}
+
+bool rpg::ParryEffect::isHarmful() const
+{
+  return false;
+}
+
+std::unique_ptr< rpg::Effect > rpg::ParryEffect::clone() const
+{
+  return std::make_unique< ParryEffect >();
+}
+
+void rpg::ParryEffect::doOnApply(Actor* owner)
+{
+  return;
+}
+
+void rpg::ParryEffect::doOnTick(Actor* owner)
+{
+  return;
+}
+
+void rpg::ParryEffect::doOnRemove(Actor* owner)
+{
+  return;
+}
+
+float rpg::ParryEffect::getParryChance() const
+{
+  return parry_chance_;
+}
+
+rpg::BlockDamageBuffEffect::BlockDamageBuffEffect(size_t duration,
+                                                  float apply_chance,
+                                                  float block_damage_buff) :
+  Effect(EffectType::Parry, duration, apply_chance),
+  block_damage_buff_(block_damage_buff)
+{
+}
+
+rpg::BlockDamageBuffEffect::BlockDamageBuffEffect() :
+  rpg::BlockDamageBuffEffect(3, 1.0f, 5)
+{
+}
+
+bool rpg::BlockDamageBuffEffect::isHarmful() const
+{
+  return false;
+}
+
+std::unique_ptr< rpg::Effect > rpg::BlockDamageBuffEffect::clone() const
+{
+  return std::make_unique< BlockDamageBuffEffect >();
+}
+
+void rpg::BlockDamageBuffEffect::doOnApply(Actor* owner)
+{
+  owner->getStats().getBlockDamage().addBase(getBlockDamageBuff());
+}
+
+void rpg::BlockDamageBuffEffect::doOnTick(Actor* owner)
+{
+  return;
+}
+
+void rpg::BlockDamageBuffEffect::doOnRemove(Actor* owner)
+{
+  return;
+}
+
+float rpg::BlockDamageBuffEffect::getBlockDamageBuff() const
+{
+  return block_damage_buff_;
 }

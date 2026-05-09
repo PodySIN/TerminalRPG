@@ -2,6 +2,7 @@
 #include "actor.hpp"
 #include "effects.hpp"
 #include "types.hpp"
+#include <memory>
 
 void rpg::Skill::processSkill(Actor* owner, Actor* target)
 {
@@ -40,20 +41,26 @@ rpg::DamageType rpg::AttackSkill::getDamageType() const
   return damage_type_;
 }
 
-rpg::KnightSlash::KnightSlash()
+rpg::BaseAttack::BaseAttack(float damage_multiplier, float flat_damage,
+                            DamageType damage_type, ScaleType scale_type)
 {
-  skill_name_ = "Knight slash";
-  flat_damage_ = 3.0f;
-  scale_type_ = ScaleType::Damage;
-  damage_multiplier_ = 1.0f;
-  damage_type_ = DamageType::Physical;
+  skill_name_ = "Base attack";
+  flat_damage_ = flat_damage;
+  scale_type_ = scale_type;
+  damage_multiplier_ = damage_multiplier;
+  damage_type_ = damage_type;
 }
 
-void rpg::KnightSlash::doProcessSkill(Actor* owner, Actor* target)
+rpg::BaseAttack::BaseAttack() :
+  rpg::BaseAttack(1.0f, 0.0f, DamageType::Physical, ScaleType::Damage)
+{
+}
+
+void rpg::BaseAttack::doProcessSkill(Actor* owner, Actor* target)
 {
   std::pair< float, DamageType > attack =
       owner->getDamageManager().calculateOutputDamage(this);
-  target->getDamageManager().handleAttack(attack);
+  target->getDamageManager().handleAttack(attack, owner);
 }
 
 rpg::SavageSlash::SavageSlash()
@@ -70,9 +77,46 @@ void rpg::SavageSlash::doProcessSkill(Actor* owner, Actor* target)
 {
   std::pair< float, DamageType > attack =
       owner->getDamageManager().calculateOutputDamage(this);
-  bool isHit = target->getDamageManager().handleAttack(attack);
+  bool isHit = target->getDamageManager().handleAttack(attack, owner);
   if (isHit) {
     auto effect = effect_->clone();
     target->getEffectManager().addEffect(std::move(effect));
   }
+}
+
+rpg::GuardianShield::GuardianShield()
+{
+  skill_name_ = "Guardian Shield";
+  parry_effect_ = std::make_unique< ParryEffect >();
+  block_damage_buff_effect_ = std::make_unique< BlockDamageBuffEffect >();
+}
+
+void rpg::GuardianShield::doProcessSkill(Actor* owner, Actor* target)
+{
+  auto parry_effect = parry_effect_->clone();
+  auto block_damage_buff_effect = block_damage_buff_effect_->clone();
+  target->getEffectManager().addEffect(std::move(block_damage_buff_effect));
+  target->getEffectManager().addEffect(std::move(parry_effect));
+}
+
+rpg::ParryAttack::ParryAttack(float damage_multiplier, ScaleType scale_type,
+                              DamageType damage_type)
+{
+  skill_name_ = "Parry attack";
+  damage_multiplier_ = damage_multiplier;
+  flat_damage_ = 0.0f;
+  scale_type_ = scale_type;
+  damage_type_ = damage_type;
+}
+
+rpg::ParryAttack::ParryAttack() :
+  ParryAttack(0.75f, ScaleType::Damage, DamageType::Physical)
+{
+}
+
+void rpg::ParryAttack::doProcessSkill(rpg::Actor* owner, Actor* target)
+{
+  std::pair< float, DamageType > attack =
+      owner->getDamageManager().calculateOutputDamage(this);
+  target->getDamageManager().handleAttack(attack, owner);
 }
