@@ -66,8 +66,7 @@ namespace rpg {
 
   class ParryEffect : public Effect {
   public:
-    ParryEffect(size_t duration, float apply_chance, float parry_chance,
-                float parry_damage_multiplier);
+    ParryEffect(size_t duration, float apply_chance, float parry_chance);
     ParryEffect();
     bool isHarmful() const override;
     std::unique_ptr< Effect > clone() const override;
@@ -75,7 +74,6 @@ namespace rpg {
 
   private:
     float parry_chance_;
-    float parry_damage_multiplier_;
     void doOnApply(Actor* owner) override;
     void doOnTick(Actor* owner) override;
     void doOnRemove(Actor* owner) override;

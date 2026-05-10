@@ -1,12 +1,15 @@
 #include "skill_manager.hpp"
+#include <iostream>
 
 void rpg::SkillManager::useSkill(size_t id) const
 {
+  std::cout << id << "<-id\n";
   skills_[id]->processSkill(owner_, owner_);
 }
 
 void rpg::SkillManager::useSkill(size_t id, Actor* target) const
 {
+  std::cout << id << "<-\n";
   skills_[id]->processSkill(owner_, target);
 }
 

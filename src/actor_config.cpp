@@ -1,4 +1,5 @@
 #include "actor_config.hpp"
+#include "types.hpp"
 
 namespace rpg {
   namespace Presets {
@@ -17,6 +18,7 @@ namespace rpg {
       config.damage_reduction = 0.0f;
       config.effect_resistance = 0.0f;
       config.actor_type = ActorType::Hero;
+      config.hero_class = HeroClass::Knight;
       return config;
     }
 
@@ -35,6 +37,7 @@ namespace rpg {
       config.damage_reduction = 0.0f;
       config.effect_resistance = 0.0f;
       config.actor_type = ActorType::Hero;
+      config.hero_class = HeroClass::Mage;
       return config;
     }
 

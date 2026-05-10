@@ -25,14 +25,44 @@ void rpg::ComplexStat::addFlat(float value)
   flat_ += value;
 }
 
+void rpg::ComplexStat::setFlat(float value)
+{
+  flat_ = value;
+}
+
+float rpg::ComplexStat::getFlat() const
+{
+  return flat_;
+}
+
 void rpg::ComplexStat::addAmplify(float value)
 {
   amplify_ += value;
 }
 
+void rpg::ComplexStat::setAmplify(float value)
+{
+  amplify_ = value;
+}
+
+float rpg::ComplexStat::getAmplify() const
+{
+  return amplify_;
+}
+
 void rpg::ComplexStat::addMultiply(float value)
 {
   multiply_ += value;
+}
+
+void rpg::ComplexStat::setMultiply(float value)
+{
+  multiply_ = value;
+}
+
+float rpg::ComplexStat::getMultiply() const
+{
+  return multiply_;
 }
 
 rpg::ComplexStat& rpg::CoreStats::getEvasion()

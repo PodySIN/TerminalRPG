@@ -16,8 +16,14 @@ namespace rpg {
     float multiply_ = 1.0f;
 
     void addFlat(float value);
+    void setFlat(float value);
+    float getFlat() const;
     void addAmplify(float value);
+    void setAmplify(float value);
+    float getAmplify() const;
     void addMultiply(float value);
+    void setMultiply(float value);
+    float getMultiply() const;
     float getTotal() const;
   };
 

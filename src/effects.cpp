@@ -52,11 +52,12 @@ float rpg::Effect::getApplyChance() const
 
 rpg::NailingEffect::NailingEffect(size_t duration, float apply_chance,
                                   float evasion_reduction) :
-  Effect(EffectType::Nailing, duration, apply_chance), evasion_reduction_(0.2f)
+  Effect(EffectType::Nailing, duration, apply_chance),
+  evasion_reduction_(evasion_reduction)
 {
 }
 
-rpg::NailingEffect::NailingEffect() : NailingEffect(3, 1.0f, 20.0f)
+rpg::NailingEffect::NailingEffect() : NailingEffect(3, 1.0f, 0.2f)
 {
 }
 
@@ -76,7 +77,7 @@ void rpg::NailingEffect::doOnApply(Actor* owner)
   evasion.addMultiply(-evasion_reduction_);
 }
 
-void rpg::NailingEffect::doOnTick(Actor* owner)
+void rpg::NailingEffect::doOnTick(Actor*)
 {
   return;
 }
@@ -110,7 +111,7 @@ std::unique_ptr< rpg::Effect > rpg::BleedingEffect::clone() const
   return std::make_unique< BleedingEffect >();
 }
 
-void rpg::BleedingEffect::doOnApply(Actor* owner)
+void rpg::BleedingEffect::doOnApply(Actor*)
 {
   return;
 }
@@ -122,21 +123,18 @@ void rpg::BleedingEffect::doOnTick(Actor* owner)
   owner->getDamageManager().takeDamage(flat_damage_per_move_);
 }
 
-void rpg::BleedingEffect::doOnRemove(Actor* owner)
+void rpg::BleedingEffect::doOnRemove(Actor*)
 {
   return;
 }
 
 rpg::ParryEffect::ParryEffect(size_t duration, float apply_chance,
-                              float parry_chance,
-                              float parry_damage_multiplier) :
-  Effect(EffectType::Parry, duration, apply_chance),
-  parry_chance_(parry_chance),
-  parry_damage_multiplier_(parry_damage_multiplier)
+                              float parry_chance) :
+  Effect(EffectType::Parry, duration, apply_chance), parry_chance_(parry_chance)
 {
 }
 
-rpg::ParryEffect::ParryEffect() : rpg::ParryEffect(3, 1.0f, 0.5f, 0.75f)
+rpg::ParryEffect::ParryEffect() : rpg::ParryEffect(3, 1.0f, 0.5f)
 {
 }
 
@@ -150,17 +148,17 @@ std::unique_ptr< rpg::Effect > rpg::ParryEffect::clone() const
   return std::make_unique< ParryEffect >();
 }
 
-void rpg::ParryEffect::doOnApply(Actor* owner)
+void rpg::ParryEffect::doOnApply(Actor*)
 {
   return;
 }
 
-void rpg::ParryEffect::doOnTick(Actor* owner)
+void rpg::ParryEffect::doOnTick(Actor*)
 {
   return;
 }
 
-void rpg::ParryEffect::doOnRemove(Actor* owner)
+void rpg::ParryEffect::doOnRemove(Actor*)
 {
   return;
 }
@@ -173,7 +171,7 @@ float rpg::ParryEffect::getParryChance() const
 rpg::BlockDamageBuffEffect::BlockDamageBuffEffect(size_t duration,
                                                   float apply_chance,
                                                   float block_damage_buff) :
-  Effect(EffectType::Parry, duration, apply_chance),
+  Effect(EffectType::BlockDamageBuff, duration, apply_chance),
   block_damage_buff_(block_damage_buff)
 {
 }
@@ -198,12 +196,12 @@ void rpg::BlockDamageBuffEffect::doOnApply(Actor* owner)
   owner->getStats().getBlockDamage().addBase(getBlockDamageBuff());
 }
 
-void rpg::BlockDamageBuffEffect::doOnTick(Actor* owner)
+void rpg::BlockDamageBuffEffect::doOnTick(Actor*)
 {
   return;
 }
 
-void rpg::BlockDamageBuffEffect::doOnRemove(Actor* owner)
+void rpg::BlockDamageBuffEffect::doOnRemove(Actor*)
 {
   return;
 }

@@ -20,6 +20,20 @@ namespace rpg {
     Pure
   };
 
+  enum class HeroClass {
+    NoClass,
+    Knight,
+    Mage,
+    Assasin,
+    Palladin,
+    Saint,
+    Priest,
+    Archer,
+    Samurai,
+    Engineer,
+    Hunter
+  };
+
   enum class EffectType {
     Poisoned,
     Stunned,
@@ -27,8 +41,10 @@ namespace rpg {
     Accurate,
     Nailing,
     Bleeding,
-    Parry
+    Parry,
+    BlockDamageBuff
   };
+
 } // namespace rpg
 
 #endif

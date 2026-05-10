@@ -67,6 +67,7 @@ namespace rpg {
   };
 
   class GuardianShield : public Skill {
+  public:
     GuardianShield();
 
   private:

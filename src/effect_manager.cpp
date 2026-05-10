@@ -2,6 +2,7 @@
 #include "actor.hpp"
 #include "effects.hpp"
 #include "random.hpp"
+#include <iostream>
 #include <memory>
 
 rpg::EffectManager::EffectManager(Actor* owner) : owner_(owner)
@@ -17,7 +18,7 @@ void rpg::EffectManager::addEffect(std::unique_ptr< Effect > effect)
       return;
     }
   } else {
-    if (Random::getFloat(0.0f, 1.0f) > effect->getApplyChance()) {
+    if (Random::getFloat(0.0f, 1.0f) >= effect->getApplyChance()) {
       return;
     }
   }
@@ -46,6 +47,7 @@ rpg::EffectManager::isActorHasEffect(EffectType type) const
 {
   for (const auto& effect : effects_) {
     if (effect->getEffectType() == type) {
+      std::cout << "Has\n";
       return std::unique_ptr< Effect >(effect.get());
     }
   }

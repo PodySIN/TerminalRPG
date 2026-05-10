@@ -1,10 +1,9 @@
 #include "hero.hpp"
 #include "actor_config.hpp"
-#include "skills.hpp"
 
 rpg::Hero::Hero(const ActorConfig& config) : Actor(config)
 {
-  auto slash = std::make_unique< KnightSlash >();
+  hero_class_ = config.hero_class;
 }
 
 bool rpg::Hero::getIsDead() const
@@ -21,4 +20,9 @@ void rpg::Hero::die()
 {
   setIsDead(true);
   return;
+}
+
+rpg::HeroClass rpg::Hero::getHeroClass() const
+{
+  return hero_class_;
 }

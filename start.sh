@@ -1,2 +1,3 @@
+mkdir saves
 make
 ./game

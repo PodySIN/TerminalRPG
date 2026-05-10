@@ -3,6 +3,7 @@
 #include "core_stats.hpp"
 #include "effects.hpp"
 #include "random.hpp"
+#include <iostream>
 #include <memory>
 
 rpg::DamageManager::DamageManager(Actor* owner) : owner_(owner)
@@ -26,9 +27,18 @@ bool rpg::DamageManager::handleAttack(std::pair< float, DamageType >& attack,
       owner_->getEffectManager().isActorHasEffect(EffectType::Parry);
   if (effect) {
     ParryEffect* parry_effect = dynamic_cast< ParryEffect* >(effect.get());
-    if (Random::getFloat(0.0f, 1.0f) < parry_effect->getParryChance()) {
-      damage -= owner_->getStats().getBlockDamage().getBase();
-      owner_->getSkillManager().useSkill(0, attacker);
+    std::cout << "CCParry!\n";
+    if (parry_effect) {
+      if (Random::getFloat(0.0f, 1.0f) < parry_effect->getParryChance()) {
+        std::cout << "Parry!\n";
+        damage -= owner_->getStats().getBlockDamage().getBase();
+        if (owner_ == attacker) {
+          std::cout << "ooops!\n";
+        }
+        owner_->getSkillManager().useSkill(0, attacker);
+      }
+    } else {
+      std::cout << "Where\n";
     }
   }
   takeDamage(damage);
@@ -84,6 +94,9 @@ rpg::DamageManager::calculateOutputDamage(AttackSkill* skill)
 
 void rpg::DamageManager::takeDamage(float damage)
 {
+  if (damage <= 0) {
+    return;
+  }
   if (owner_->getStats().getCurrentHealth() - damage <= 0) {
     owner_->getStats().getCurrentHealth() = 0;
     owner_->die();

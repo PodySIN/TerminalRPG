@@ -16,6 +16,7 @@ namespace rpg {
     float damage_bonus = 0.0f;
     float damage_reduction = 0.0f;
     float effect_resistance = 0.0f;
+    HeroClass hero_class = HeroClass::Knight;
     ActorType actor_type = ActorType::Hero;
     ActorConfig() = default;
   };

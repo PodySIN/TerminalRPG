@@ -91,7 +91,7 @@ rpg::GuardianShield::GuardianShield()
   block_damage_buff_effect_ = std::make_unique< BlockDamageBuffEffect >();
 }
 
-void rpg::GuardianShield::doProcessSkill(Actor* owner, Actor* target)
+void rpg::GuardianShield::doProcessSkill(Actor*, Actor* target)
 {
   auto parry_effect = parry_effect_->clone();
   auto block_damage_buff_effect = block_damage_buff_effect_->clone();
