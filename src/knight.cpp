@@ -6,8 +6,8 @@
 rpg::Knight::Knight() : Hero(Presets::Knight())
 {
   getStats().getCurrentResource() = getStats().getResource().getTotal();
-  auto parry_attack = std::make_unique< ParryAttack >(1.25f, ScaleType::Defense,
-                                                      DamageType::Physical);
+  auto parry_attack =
+      std::make_unique< ParryAttack >(1.25f, ScaleType::Defense);
   auto knight_slash = std::make_unique< BaseAttack >();
   auto savage_slash = std::make_unique< SavageSlash >();
   auto guardian_shield = std::make_unique< GuardianShield >();

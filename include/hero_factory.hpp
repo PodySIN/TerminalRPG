@@ -3,6 +3,7 @@
 
 #include "hero.hpp"
 #include "knight.hpp"
+#include "types.hpp"
 #include <memory>
 
 namespace rpg {
@@ -44,6 +45,36 @@ namespace rpg {
       return HeroClass::Engineer;
     }
     return HeroClass::NoClass;
+  }
+
+  inline std::string getClassNameByHeroClass(HeroClass hero_class)
+  {
+    switch (hero_class) {
+      case HeroClass::NoClass:
+        return "NoClass";
+      case HeroClass::Knight:
+        return "Knight";
+      case HeroClass::Mage:
+        return "Mage";
+      case HeroClass::Assasin:
+        return "Assasin";
+      case HeroClass::Palladin:
+        return "Palladin";
+      case HeroClass::Saint:
+        return "Saint";
+      case HeroClass::Priest:
+        return "Priest";
+      case HeroClass::Archer:
+        return "Archer";
+      case HeroClass::Samurai:
+        return "Samurai";
+      case HeroClass::Engineer:
+        return "Engineer";
+      case HeroClass::Hunter:
+        return "Hunter";
+      default:
+        return "Unknown";
+    }
   }
 
 } // namespace rpg

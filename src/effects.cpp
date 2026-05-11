@@ -2,8 +2,8 @@
 #include "actor.hpp"
 #include <memory>
 
-rpg::Effect::Effect(EffectType type, size_t duration, float apply_chance) :
-  type_(type), duration_(duration), apply_chance_(apply_chance)
+rpg::Effect::Effect(EffectType type, size_t duration) :
+  type_(type), duration_(duration)
 {
 }
 
@@ -45,23 +45,21 @@ float rpg::Effect::getDuration() const
   return duration_;
 }
 
-float rpg::Effect::getApplyChance() const
+void rpg::Effect::setDuration(float value)
 {
-  return apply_chance_;
+  duration_ = value;
 }
 
-rpg::NailingEffect::NailingEffect(size_t duration, float apply_chance,
-                                  float evasion_reduction) :
-  Effect(EffectType::Nailing, duration, apply_chance),
-  evasion_reduction_(evasion_reduction)
+rpg::NailingEffect::NailingEffect(size_t duration, float speed_reduction) :
+  Effect(EffectType::Nailing, duration), speed_reduction_(speed_reduction)
 {
 }
 
-rpg::NailingEffect::NailingEffect() : NailingEffect(3, 1.0f, 0.2f)
+rpg::NailingEffect::NailingEffect() : NailingEffect(3, 0.2f)
 {
 }
 
-bool rpg::NailingEffect::isHarmful() const
+bool rpg::NailingEffect::isStackable() const
 {
   return true;
 }
@@ -73,8 +71,8 @@ std::unique_ptr< rpg::Effect > rpg::NailingEffect::clone() const
 
 void rpg::NailingEffect::doOnApply(Actor* owner)
 {
-  auto& evasion = owner->getStats().getEvasion();
-  evasion.addMultiply(-evasion_reduction_);
+  auto& speed = owner->getStats().getSpeed();
+  speed.addBase(-speed_reduction_);
 }
 
 void rpg::NailingEffect::doOnTick(Actor*)
@@ -84,24 +82,24 @@ void rpg::NailingEffect::doOnTick(Actor*)
 
 void rpg::NailingEffect::doOnRemove(Actor* owner)
 {
-  auto& evasion = owner->getStats().getEvasion();
-  evasion.addMultiply(evasion_reduction_);
+  auto& speed = owner->getStats().getSpeed();
+  speed.addBase(speed_reduction_);
 }
 
-rpg::BleedingEffect::BleedingEffect(size_t duration, float apply_chance,
+rpg::BleedingEffect::BleedingEffect(size_t duration,
                                     float percetage_damage_per_move,
                                     float flat_damage_per_move) :
-  Effect(EffectType::Bleeding, duration, apply_chance),
+  Effect(EffectType::Bleeding, duration),
   percetage_damage_per_move_(percetage_damage_per_move),
   flat_damage_per_move_(flat_damage_per_move)
 {
 }
 
-rpg::BleedingEffect::BleedingEffect() : BleedingEffect(2, 1.0f, 0.03f, 1.0f)
+rpg::BleedingEffect::BleedingEffect() : BleedingEffect(2, 0.03f, 1.0f)
 {
 }
 
-bool rpg::BleedingEffect::isHarmful() const
+bool rpg::BleedingEffect::isStackable() const
 {
   return true;
 }
@@ -128,17 +126,16 @@ void rpg::BleedingEffect::doOnRemove(Actor*)
   return;
 }
 
-rpg::ParryEffect::ParryEffect(size_t duration, float apply_chance,
-                              float parry_chance) :
-  Effect(EffectType::Parry, duration, apply_chance), parry_chance_(parry_chance)
+rpg::ParryEffect::ParryEffect(size_t duration, float parry_chance) :
+  Effect(EffectType::Parry, duration), parry_chance_(parry_chance)
 {
 }
 
-rpg::ParryEffect::ParryEffect() : rpg::ParryEffect(3, 1.0f, 0.5f)
+rpg::ParryEffect::ParryEffect() : rpg::ParryEffect(3.0f, 0.5f)
 {
 }
 
-bool rpg::ParryEffect::isHarmful() const
+bool rpg::ParryEffect::isStackable() const
 {
   return false;
 }
@@ -168,45 +165,65 @@ float rpg::ParryEffect::getParryChance() const
   return parry_chance_;
 }
 
-rpg::BlockDamageBuffEffect::BlockDamageBuffEffect(size_t duration,
-                                                  float apply_chance,
-                                                  float block_damage_buff) :
-  Effect(EffectType::BlockDamageBuff, duration, apply_chance),
-  block_damage_buff_(block_damage_buff)
+rpg::DamageBuffEffect::DamageBuffEffect(size_t duration, float buff) :
+  Effect(EffectType::DamageBuff, duration), damage_buff_(buff)
 {
 }
 
-rpg::BlockDamageBuffEffect::BlockDamageBuffEffect() :
-  rpg::BlockDamageBuffEffect(3, 1.0f, 5)
+rpg::DamageBuffEffect::DamageBuffEffect() : rpg::DamageBuffEffect(3.0f, 0.2f)
 {
 }
 
-bool rpg::BlockDamageBuffEffect::isHarmful() const
+bool rpg::DamageBuffEffect::isStackable() const
 {
-  return false;
+  return true;
 }
 
-std::unique_ptr< rpg::Effect > rpg::BlockDamageBuffEffect::clone() const
+std::unique_ptr< rpg::Effect > rpg::DamageBuffEffect::clone() const
 {
-  return std::make_unique< BlockDamageBuffEffect >();
+  return std::make_unique< DamageBuffEffect >();
 }
 
-void rpg::BlockDamageBuffEffect::doOnApply(Actor* owner)
+void rpg::DamageBuffEffect::doOnApply(Actor* owner)
 {
-  owner->getStats().getBlockDamage().addBase(getBlockDamageBuff());
+  owner->getStats().getDamage().addMultiply(getDamageBuff());
 }
 
-void rpg::BlockDamageBuffEffect::doOnTick(Actor*)
+void rpg::DamageBuffEffect::doOnTick(Actor*)
 {
   return;
 }
 
-void rpg::BlockDamageBuffEffect::doOnRemove(Actor*)
+void rpg::DamageBuffEffect::doOnRemove(Actor* owner)
+{
+  owner->getStats().getDamage().addMultiply(-getDamageBuff());
+}
+
+float rpg::DamageBuffEffect::getDamageBuff() const
+{
+  return damage_buff_;
+}
+void rpg::Effect::doOnStack(Effect*)
 {
   return;
 }
 
-float rpg::BlockDamageBuffEffect::getBlockDamageBuff() const
+void rpg::ParryEffect::doOnStack(Effect* effect)
 {
-  return block_damage_buff_;
+  setDuration(std::max(getDuration(), effect->getDuration()));
+}
+
+void rpg::NailingEffect::doOnStack(Effect* effect)
+{
+  Effect::doOnStack(effect);
+}
+
+void rpg::BleedingEffect::doOnStack(Effect* effect)
+{
+  Effect::doOnStack(effect);
+}
+
+void rpg::DamageBuffEffect::doOnStack(Effect* effect)
+{
+  Effect::doOnStack(effect);
 }

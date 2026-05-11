@@ -2,7 +2,7 @@
 
 float rpg::ComplexStat::getTotal() const
 {
-  return ((base_ + flat_) * multiply_) * amplify_;
+  return (base_ + flat_) * multiply_;
 }
 
 float rpg::BaseStat::getBase() const
@@ -35,21 +35,6 @@ float rpg::ComplexStat::getFlat() const
   return flat_;
 }
 
-void rpg::ComplexStat::addAmplify(float value)
-{
-  amplify_ += value;
-}
-
-void rpg::ComplexStat::setAmplify(float value)
-{
-  amplify_ = value;
-}
-
-float rpg::ComplexStat::getAmplify() const
-{
-  return amplify_;
-}
-
 void rpg::ComplexStat::addMultiply(float value)
 {
   multiply_ += value;
@@ -63,16 +48,6 @@ void rpg::ComplexStat::setMultiply(float value)
 float rpg::ComplexStat::getMultiply() const
 {
   return multiply_;
-}
-
-rpg::ComplexStat& rpg::CoreStats::getEvasion()
-{
-  return evasion_;
-}
-
-const rpg::ComplexStat& rpg::CoreStats::getEvasion() const
-{
-  return evasion_;
 }
 
 rpg::ComplexStat& rpg::CoreStats::getHealth()
@@ -125,16 +100,6 @@ const rpg::ComplexStat& rpg::CoreStats::getResource() const
   return resource_;
 }
 
-rpg::BaseStat& rpg::CoreStats::getEffectResistance()
-{
-  return effect_resistance_;
-}
-
-const rpg::BaseStat& rpg::CoreStats::getEffectResistance() const
-{
-  return effect_resistance_;
-}
-
 rpg::BaseStat& rpg::CoreStats::getDamageBonus()
 {
   return damage_bonus_;
@@ -173,26 +138,6 @@ rpg::BaseStat& rpg::CoreStats::getDamageReduction()
 const rpg::BaseStat& rpg::CoreStats::getDamageReduction() const
 {
   return damage_reduction_;
-}
-
-rpg::BaseStat& rpg::CoreStats::getBlockDamage()
-{
-  return block_damage_;
-}
-
-const rpg::BaseStat& rpg::CoreStats::getBlockDamage() const
-{
-  return block_damage_;
-}
-
-rpg::BaseStat& rpg::CoreStats::getMagicResistance()
-{
-  return magic_resistance_;
-}
-
-const rpg::BaseStat& rpg::CoreStats::getMagicResistance() const
-{
-  return magic_resistance_;
 }
 
 float rpg::CoreStats::calculatePhysicalResistance() const

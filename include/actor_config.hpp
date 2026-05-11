@@ -12,12 +12,10 @@ namespace rpg {
     float speed = 100.0f;
     float crit_chance = 0.05f;
     float crit_damage = 1.0f;
-    float evasion = 100.0f;
     float damage_bonus = 0.0f;
     float damage_reduction = 0.0f;
-    float effect_resistance = 0.0f;
-    HeroClass hero_class = HeroClass::Knight;
     ActorType actor_type = ActorType::Hero;
+    HeroClass hero_class = HeroClass::Knight;
     ActorConfig() = default;
   };
 

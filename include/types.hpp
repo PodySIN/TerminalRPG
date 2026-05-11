@@ -14,12 +14,6 @@ namespace rpg {
     Resource
   };
 
-  enum class DamageType {
-    Physical,
-    Magic,
-    Pure
-  };
-
   enum class HeroClass {
     NoClass,
     Knight,
@@ -34,6 +28,25 @@ namespace rpg {
     Hunter
   };
 
+  enum class StatType {
+    Health,
+    Damage,
+    Evasion,
+    Defense,
+    Speed,
+    CritChance,
+    CritDamage,
+    MagicResistance,
+    BlockDamage,
+    Resource
+  };
+
+  enum class KnightRareReward {
+  };
+
+  enum class KnightEpicReward {
+  };
+
   enum class EffectType {
     Poisoned,
     Stunned,
@@ -42,7 +55,7 @@ namespace rpg {
     Nailing,
     Bleeding,
     Parry,
-    BlockDamageBuff
+    DamageBuff
   };
 
 } // namespace rpg

@@ -1,8 +1,6 @@
 #include "effect_manager.hpp"
 #include "actor.hpp"
 #include "effects.hpp"
-#include "random.hpp"
-#include <iostream>
 #include <memory>
 
 rpg::EffectManager::EffectManager(Actor* owner) : owner_(owner)
@@ -11,19 +9,19 @@ rpg::EffectManager::EffectManager(Actor* owner) : owner_(owner)
 
 void rpg::EffectManager::addEffect(std::unique_ptr< Effect > effect)
 {
-  if (effect->isHarmful()) {
-    float resistance = owner_->getStats().getEffectResistance().getBase();
-    float chance = effect->getApplyChance() * (1 - resistance);
-    if (Random::getFloat(0.0f, 1.0f) > chance) {
-      return;
-    }
+  if (effect->isStackable()) {
+    effect->onApply(owner_);
+    effects_.push_back(std::move(effect));
   } else {
-    if (Random::getFloat(0.0f, 1.0f) >= effect->getApplyChance()) {
-      return;
+    std::unique_ptr< Effect > effect_on_owner =
+        owner_->getEffectManager().isActorHasEffect(effect->getEffectType());
+    if (!effect_on_owner) {
+      effect->onApply(owner_);
+      effects_.push_back(std::move(effect));
+    } else {
+      effect_on_owner->doOnStack(effect.get());
     }
   }
-  effect->onApply(owner_);
-  effects_.push_back(std::move(effect));
 }
 
 void rpg::EffectManager::update()
@@ -47,7 +45,6 @@ rpg::EffectManager::isActorHasEffect(EffectType type) const
 {
   for (const auto& effect : effects_) {
     if (effect->getEffectType() == type) {
-      std::cout << "Has\n";
       return std::unique_ptr< Effect >(effect.get());
     }
   }

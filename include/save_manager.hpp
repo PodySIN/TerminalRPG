@@ -7,11 +7,8 @@
 
 namespace rpg {
 
-  struct heroAccount {};
   class SaveManager {
   public:
-    SaveManager();
-
     static void save(const HeroAccount& account);
     static HeroAccount load(const std::string& name);
     static std::vector< std::string > findSavedHeroes();

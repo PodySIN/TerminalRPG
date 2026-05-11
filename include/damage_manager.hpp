@@ -2,18 +2,15 @@
 #define DAMAGE_MANAGER_HPP
 
 #include "skills.hpp"
-#include "types.hpp"
 
 namespace rpg {
 
   class DamageManager {
   public:
     DamageManager(Actor* owner);
-    std::pair< float, DamageType > calculateOutputDamage(AttackSkill* skill);
-    bool handleAttack(std::pair< float, DamageType >& attack, Actor* attacker);
-    float calculateInputDamage(std::pair< float, DamageType >& attack);
-
-    float calculateDodgeChance();
+    float calculateOutputDamage(AttackSkill* skill);
+    bool handleAttack(float attack, Actor* attacker);
+    float calculateInputDamage(float attack);
     void takeDamage(float damage);
 
   private:

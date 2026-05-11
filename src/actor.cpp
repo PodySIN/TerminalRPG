@@ -59,13 +59,11 @@ rpg::Actor::Actor(const ActorConfig& config) :
   getStats().getHealth().setBase(config.health);
   getStats().getResource().setBase(config.resource);
   getStats().getDefense().setBase(config.defense);
-  getStats().getEvasion().setBase(config.evasion);
   getStats().getSpeed().setBase(config.speed);
   getStats().getDamage().setBase(config.damage);
   getStats().getCritChance().setBase(config.crit_chance);
   getStats().getCritDamage().setBase(config.crit_damage);
   getStats().getDamageBonus().setBase(config.damage_bonus);
-  getStats().getEffectResistance().setBase(config.effect_resistance);
   getStats().getDamageReduction().setBase(config.damage_reduction);
   getStats().getCurrentHealth() = config.health;
 }

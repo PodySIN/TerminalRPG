@@ -16,18 +16,19 @@ void rpg::Game::mainMenu()
   std::cout << "You can start new game or load previous\n";
   using cmd_t = void (*)(std::istream&, std::ostream&, HeroAccount&);
   std::unordered_map< std::string, cmd_t > cmds;
-  HeroAccount account;
+  cmds["new-account"] = rpg::mmc::newAccount;
+  cmds["show-accounts"] = rpg::mmc::showAccounts;
+  cmds["show-account"] = rpg::mmc::showAccount;
+  cmds["delete-account"] = rpg::mmc::deleteAccount;
+  cmds["login"] = rpg::mmc::login;
   cmds["new-hero"] = rpg::mmc::newHero;
-  cmds["show-heroes"] = rpg::mmc::showHeroes;
-  cmds["show-hero"] = rpg::mmc::showHero;
-  cmds["delete-hero"] = rpg::mmc::deleteHero;
-  cmds["play-as"] = rpg::mmc::playAs;
-  cmds["new-teammate"] = rpg::mmc::newTeammate;
+  cmds["join-world"] = rpg::mmc::joinWorld;
+  cmds["exit"] = rpg::mmc::exit;
   std::string cmd;
   while (std::cin >> cmd) {
     if (cmds.find(cmd) != cmds.end()) {
       cmds.at(cmd)(std::cin, std::cout, account_);
-      if (cmd == "play-as" && account_.name != "") {
+      if (cmd == "join-world" && account_.account_name != "") {
         processGame();
       }
     } else {
@@ -40,5 +41,5 @@ void rpg::Game::mainMenu()
 
 void rpg::Game::processGame()
 {
-  std::cout << "Welcome, " << account_.name << "!\n";
+  std::cout << "processGame\n";
 }

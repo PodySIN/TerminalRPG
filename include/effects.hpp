@@ -9,13 +9,14 @@ namespace rpg {
   class Actor;
   class Effect {
   public:
-    Effect(EffectType type, size_t duration, float apply_chance_);
+    Effect(EffectType type, size_t duration);
     virtual ~Effect() = default;
     void onApply(Actor* owner);
     void onTick(Actor* owner);
     void onRemove(Actor* owner);
     bool isExpired() const;
-    virtual bool isHarmful() const = 0;
+    virtual bool isStackable() const = 0;
+    virtual void doOnStack(Effect* effect);
     float getDuration() const;
     float getApplyChance() const;
     virtual std::unique_ptr< Effect > clone() const = 0;
@@ -23,11 +24,11 @@ namespace rpg {
 
   protected:
     void reduceDuration();
+    void setDuration(float value);
 
   private:
     EffectType type_;
     size_t duration_ = 3;
-    float apply_chance_ = 1.0f;
 
     virtual void doOnApply(Actor* owner) = 0;
     virtual void doOnTick(Actor* owner) = 0;
@@ -36,13 +37,14 @@ namespace rpg {
 
   class NailingEffect : public Effect {
   public:
-    NailingEffect(size_t duration, float apply_chance, float evasion_reduction);
+    NailingEffect(size_t duration, float speed_reduction);
     NailingEffect();
-    bool isHarmful() const override;
+    bool isStackable() const override;
+    void doOnStack(Effect* effect) override;
     std::unique_ptr< Effect > clone() const override;
 
   private:
-    float evasion_reduction_ = 20.0f;
+    float speed_reduction_ = 20.0f;
     void doOnApply(Actor* owner) override;
     void doOnTick(Actor* owner) override;
     void doOnRemove(Actor* owner) override;
@@ -50,10 +52,11 @@ namespace rpg {
 
   class BleedingEffect : public Effect {
   public:
-    BleedingEffect(size_t duration, float apply_chance,
-                   float percetage_damage_per_move, float flat_damage_per_move);
+    BleedingEffect(size_t duration, float percetage_damage_per_move,
+                   float flat_damage_per_move);
     BleedingEffect();
-    bool isHarmful() const override;
+    bool isStackable() const override;
+    void doOnStack(Effect* effect) override;
     std::unique_ptr< Effect > clone() const override;
 
   private:
@@ -66,9 +69,10 @@ namespace rpg {
 
   class ParryEffect : public Effect {
   public:
-    ParryEffect(size_t duration, float apply_chance, float parry_chance);
+    ParryEffect(size_t duration, float parry_chance);
     ParryEffect();
-    bool isHarmful() const override;
+    bool isStackable() const override;
+    void doOnStack(Effect* effect) override;
     std::unique_ptr< Effect > clone() const override;
     float getParryChance() const;
 
@@ -79,16 +83,17 @@ namespace rpg {
     void doOnRemove(Actor* owner) override;
   };
 
-  class BlockDamageBuffEffect : public Effect {
+  class DamageBuffEffect : public Effect {
   public:
-    BlockDamageBuffEffect(size_t duration, float apply_chance, float buff);
-    BlockDamageBuffEffect();
-    bool isHarmful() const override;
+    DamageBuffEffect(size_t duration, float buff);
+    DamageBuffEffect();
+    bool isStackable() const override;
+    void doOnStack(Effect* effect) override;
     std::unique_ptr< Effect > clone() const override;
-    float getBlockDamageBuff() const;
+    float getDamageBuff() const;
 
   private:
-    float block_damage_buff_;
+    float damage_buff_;
     void doOnApply(Actor* owner) override;
     void doOnTick(Actor* owner) override;
     void doOnRemove(Actor* owner) override;

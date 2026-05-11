@@ -3,69 +3,40 @@
 #include "core_stats.hpp"
 #include "effects.hpp"
 #include "random.hpp"
-#include <iostream>
 #include <memory>
 
 rpg::DamageManager::DamageManager(Actor* owner) : owner_(owner)
 {
 }
 
-float rpg::DamageManager::calculateDodgeChance()
+bool rpg::DamageManager::handleAttack(float attack, Actor* attacker)
 {
-  float evasion = owner_->getStats().getEvasion().getTotal();
-  return evasion / (evasion + 100.0f);
-}
-
-bool rpg::DamageManager::handleAttack(std::pair< float, DamageType >& attack,
-                                      Actor* attacker)
-{
-  if (Random::getFloat(0.0f, 1.0f) < calculateDodgeChance()) {
-    return false;
-  }
   float damage = calculateInputDamage(attack);
   std::unique_ptr< Effect > effect =
       owner_->getEffectManager().isActorHasEffect(EffectType::Parry);
   if (effect) {
     ParryEffect* parry_effect = dynamic_cast< ParryEffect* >(effect.get());
-    std::cout << "CCParry!\n";
     if (parry_effect) {
       if (Random::getFloat(0.0f, 1.0f) < parry_effect->getParryChance()) {
-        std::cout << "Parry!\n";
-        damage -= owner_->getStats().getBlockDamage().getBase();
-        if (owner_ == attacker) {
-          std::cout << "ooops!\n";
+        if (owner_ != attacker) {
+          owner_->getSkillManager().useSkill(0, attacker);
         }
-        owner_->getSkillManager().useSkill(0, attacker);
       }
-    } else {
-      std::cout << "Where\n";
     }
   }
   takeDamage(damage);
   return true;
 }
 
-float rpg::DamageManager::calculateInputDamage(
-    std::pair< float, DamageType >& attack)
+float rpg::DamageManager::calculateInputDamage(float attack)
 {
-  float damage = attack.first;
-  damage -= owner_->getStats().getBlockDamage().getBase();
-  switch (attack.second) {
-    case DamageType::Physical:
-      damage *= (1 - owner_->getStats().calculatePhysicalResistance());
-      break;
-    case DamageType::Magic:
-      damage *= (1 - owner_->getStats().getMagicResistance().getBase());
-      break;
-    case DamageType::Pure:
-      break;
-  }
+  float damage = attack;
+  damage *= (1 - owner_->getStats().calculatePhysicalResistance());
   damage *= (1 - owner_->getStats().getDamageReduction().getBase());
   return damage;
 }
 
-std::pair< float, rpg::DamageType >
-rpg::DamageManager::calculateOutputDamage(AttackSkill* skill)
+float rpg::DamageManager::calculateOutputDamage(AttackSkill* skill)
 {
   float damage = 0.0f;
   switch (skill->getScaleType()) {
@@ -89,7 +60,7 @@ rpg::DamageManager::calculateOutputDamage(AttackSkill* skill)
     damage *= owner_->getStats().getCritDamage().getBase();
   }
   damage *= owner_->getStats().getDamageBonus().getBase();
-  return {damage, skill->getDamageType()};
+  return damage;
 }
 
 void rpg::DamageManager::takeDamage(float damage)

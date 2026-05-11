@@ -27,20 +27,18 @@ namespace rpg {
   public:
     float getDamageMultiplier() const;
     float getFlatDamage() const;
-    DamageType getDamageType() const;
     ScaleType getScaleType() const;
 
   protected:
     float damage_multiplier_;
     float flat_damage_;
-    DamageType damage_type_;
     ScaleType scale_type_;
   };
 
   class BaseAttack : public AttackSkill {
   public:
     BaseAttack(float damage_multiplier, float flat_damage,
-               DamageType damage_type, ScaleType scale_type);
+               ScaleType scale_type);
     BaseAttack();
 
   private:
@@ -50,8 +48,7 @@ namespace rpg {
   class ParryAttack : public AttackSkill {
   public:
     ParryAttack();
-    ParryAttack(float damage_multiplier, ScaleType scale_type,
-                DamageType damage_type);
+    ParryAttack(float damage_multiplier, ScaleType scale_type);
 
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
