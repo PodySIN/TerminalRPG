@@ -1,25 +1,37 @@
 #ifndef SKILL_MANAGER_HPP
 #define SKILL_MANAGER_HPP
 
-#include "skills.hpp"
-#include <cstddef>
 #include <memory>
+#include <string>
+#include <vector>
+#include "skills.hpp"
 
 namespace rpg {
   class Actor;
+
   class SkillManager {
   public:
     SkillManager(Actor* owner);
+
+    void addSkill(std::unique_ptr< Skill > skill);
+    void addLockedSkill(std::unique_ptr< Skill > skill);
+    void unlockSkill(size_t index);
+    bool isSkillLocked(size_t index) const;
+    std::string getSkillName(size_t index) const;
+
     void useSkill(size_t id) const;
     void useSkill(size_t id, Actor* target) const;
-    void useSkill(size_t id, std::vector< Actor* > targets) const;
-    void addSkill(std::unique_ptr< Skill > skill);
+    void useSkill(size_t id, const std::vector< Actor* >& targets) const;
+
+    void addLevelsToSkill(size_t id, size_t levels);
+    size_t getSkillCount() const;
 
   private:
     Actor* owner_;
     std::vector< std::unique_ptr< Skill > > skills_;
+    std::vector< bool > locked_;
   };
 
-} // namespace rpg
+}
 
 #endif

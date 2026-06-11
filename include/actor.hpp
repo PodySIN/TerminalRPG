@@ -10,6 +10,7 @@
 
 namespace rpg {
   HeroClass getHeroClassByString(std::string class_name);
+
   class Actor {
   public:
     Actor(const ActorConfig& config);
@@ -33,6 +34,6 @@ namespace rpg {
     DamageManager damage_manager_;
     ActorType actor_type_;
   };
-} // namespace rpg
+}
 
 #endif

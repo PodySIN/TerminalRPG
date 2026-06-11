@@ -5,18 +5,25 @@
 
 namespace rpg {
 
+  class Actor;
+
   class DamageManager {
   public:
     DamageManager(Actor* owner);
+
     float calculateOutputDamage(AttackSkill* skill);
-    bool handleAttack(float attack, Actor* attacker);
     float calculateInputDamage(float attack);
+    bool handleAttack(float attack, Actor* attacker);
     void takeDamage(float damage);
+
+    void heal(float amount);
+    void setManaShield(float value);
+    void revive(float percent);
 
   private:
     Actor* owner_;
   };
 
-} // namespace rpg
+}
 
 #endif

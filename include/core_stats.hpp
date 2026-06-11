@@ -1,5 +1,5 @@
-#ifndef COMBAT_STATS_HPP
-#define COMBAT_STATS_HPP
+#ifndef CORE_STATS_HPP
+#define CORE_STATS_HPP
 
 namespace rpg {
 
@@ -44,10 +44,24 @@ namespace rpg {
     const BaseStat& getCritChance() const;
     BaseStat& getDamageReduction();
     const BaseStat& getDamageReduction() const;
+
     float& getCurrentHealth();
     const float& getCurrentHealth() const;
     float& getCurrentResource();
     const float& getCurrentResource() const;
+
+    float getShield() const;
+    void setShield(float value);
+    void addShield(float value);
+    void removeShield(float value);
+
+    bool isInvincible() const;
+    void setInvincible(bool value);
+    void setIsDead(bool value);
+    bool getIsDead() const;
+    bool isStunned() const;
+    void setStunned(bool value);
+
     float calculatePhysicalResistance() const;
 
   private:
@@ -62,7 +76,12 @@ namespace rpg {
     BaseStat crit_chance_;
     BaseStat damage_bonus_;
     BaseStat damage_reduction_;
+
+    float shield_ = 0.0f;
+    bool invincible_ = false;
+    bool stunned_ = false;
+    bool is_dead_ = false;
   };
-} // namespace rpg
+}
 
 #endif

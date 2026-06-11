@@ -3,24 +3,20 @@
 #include "core_stats.hpp"
 #include "effects.hpp"
 #include "random.hpp"
-#include <memory>
 
-rpg::DamageManager::DamageManager(Actor* owner) : owner_(owner)
-{
-}
+rpg::DamageManager::DamageManager(rpg::Actor* owner):
+  owner_(owner)
+{}
 
-bool rpg::DamageManager::handleAttack(float attack, Actor* attacker)
+bool rpg::DamageManager::handleAttack(float attack, rpg::Actor* attacker)
 {
   float damage = calculateInputDamage(attack);
-  std::unique_ptr< Effect > effect =
-      owner_->getEffectManager().isActorHasEffect(EffectType::Parry);
+  auto effect = owner_->getEffectManager().getEffect(rpg::EffectType::Parry);
   if (effect) {
-    ParryEffect* parry_effect = dynamic_cast< ParryEffect* >(effect.get());
-    if (parry_effect) {
-      if (Random::getFloat(0.0f, 1.0f) < parry_effect->getParryChance()) {
-        if (owner_ != attacker) {
-          owner_->getSkillManager().useSkill(0, attacker);
-        }
+    rpg::ParryEffect* parry = dynamic_cast< rpg::ParryEffect* >(effect);
+    if (parry && rpg::Random::getFloat(0.0f, 1.0f) < parry->getParryChance()) {
+      if (owner_ != attacker) {
+        owner_->getSkillManager().useSkill(0, attacker);
       }
     }
   }
@@ -36,27 +32,26 @@ float rpg::DamageManager::calculateInputDamage(float attack)
   return damage;
 }
 
-float rpg::DamageManager::calculateOutputDamage(AttackSkill* skill)
+float rpg::DamageManager::calculateOutputDamage(rpg::AttackSkill* skill)
 {
   float damage = 0.0f;
   switch (skill->getScaleType()) {
-    case ScaleType::Damage:
+    case rpg::ScaleType::Damage:
       damage = owner_->getStats().getDamage().getTotal();
       break;
-    case ScaleType::Health:
+    case rpg::ScaleType::Health:
       damage = owner_->getStats().getHealth().getTotal();
       break;
-    case ScaleType::Defense:
+    case rpg::ScaleType::Defense:
       damage = owner_->getStats().getDefense().getTotal();
       break;
-    case ScaleType::Resource:
+    case rpg::ScaleType::Resource:
       damage = owner_->getStats().getResource().getTotal();
       break;
   }
   damage *= skill->getDamageMultiplier();
   damage += skill->getFlatDamage();
-  if (Random::getFloat(0.0f, 1.0f) <
-      owner_->getStats().getCritChance().getBase()) {
+  if (rpg::Random::getFloat(0.0f, 1.0f) < owner_->getStats().getCritChance().getBase()) {
     damage *= owner_->getStats().getCritDamage().getBase();
   }
   damage *= owner_->getStats().getDamageBonus().getBase();
@@ -65,13 +60,42 @@ float rpg::DamageManager::calculateOutputDamage(AttackSkill* skill)
 
 void rpg::DamageManager::takeDamage(float damage)
 {
+  if (damage <= 0)
+    return;
+  auto& stats = owner_->getStats();
+  if (stats.getShield() > 0) {
+    float shield_absorb = std::min(damage, stats.getShield());
+    stats.setShield(stats.getShield() - shield_absorb);
+    damage -= shield_absorb;
+  }
   if (damage <= 0) {
     return;
   }
-  if (owner_->getStats().getCurrentHealth() - damage <= 0) {
-    owner_->getStats().getCurrentHealth() = 0;
+  damage *= (1 - stats.getDamageReduction().getBase());
+  if (stats.getCurrentHealth() - damage <= 0) {
+    stats.getCurrentHealth() = 0;
     owner_->die();
-    return;
+  } else {
+    stats.getCurrentHealth() -= damage;
   }
-  owner_->getStats().getCurrentHealth() -= damage;
+}
+
+void rpg::DamageManager::heal(float amount)
+{
+  if (amount <= 0)
+    return;
+
+  auto& stats = owner_->getStats();
+  float max_health = stats.getHealth().getTotal();
+  float new_health = stats.getCurrentHealth() + amount;
+  stats.getCurrentHealth() = std::min(max_health, new_health);
+}
+
+void rpg::DamageManager::revive(float percent)
+{
+  auto& stats = owner_->getStats();
+  float max_health = stats.getHealth().getTotal();
+  stats.getCurrentHealth() = max_health * percent;
+  stats.setInvincible(false);
+  stats.setStunned(false);
 }

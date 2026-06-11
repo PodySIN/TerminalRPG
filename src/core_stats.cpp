@@ -1,4 +1,5 @@
 #include "core_stats.hpp"
+#include <algorithm>
 
 float rpg::ComplexStat::getTotal() const
 {
@@ -164,4 +165,54 @@ float& rpg::CoreStats::getCurrentResource()
 const float& rpg::CoreStats::getCurrentResource() const
 {
   return current_resource_;
+}
+
+float rpg::CoreStats::getShield() const
+{
+  return shield_;
+}
+
+void rpg::CoreStats::setShield(float value)
+{
+  shield_ = std::max(0.0f, value);
+}
+
+void rpg::CoreStats::addShield(float value)
+{
+  shield_ += value;
+}
+
+void rpg::CoreStats::removeShield(float value)
+{
+  shield_ = std::max(0.0f, shield_ - value);
+}
+
+bool rpg::CoreStats::isInvincible() const
+{
+  return invincible_;
+}
+
+void rpg::CoreStats::setInvincible(bool value)
+{
+  invincible_ = value;
+}
+
+bool rpg::CoreStats::isStunned() const
+{
+  return stunned_;
+}
+
+void rpg::CoreStats::setStunned(bool value)
+{
+  stunned_ = value;
+}
+
+bool rpg::CoreStats::getIsDead() const
+{
+  return is_dead_;
+}
+
+void rpg::CoreStats::setIsDead(bool is_dead)
+{
+  is_dead_ = is_dead;
 }

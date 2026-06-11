@@ -20,31 +20,18 @@ namespace rpg {
     Mage,
     Assasin,
     Palladin,
-    Saint,
     Priest,
-    Archer,
-    Samurai,
-    Engineer,
-    Hunter
+    Archer
   };
 
   enum class StatType {
     Health,
     Damage,
-    Evasion,
     Defense,
     Speed,
     CritChance,
     CritDamage,
-    MagicResistance,
-    BlockDamage,
     Resource
-  };
-
-  enum class KnightRareReward {
-  };
-
-  enum class KnightEpicReward {
   };
 
   enum class EffectType {
@@ -55,7 +42,17 @@ namespace rpg {
     Nailing,
     Bleeding,
     Parry,
-    DamageBuff
+    DamageBuff,
+    Burn,
+    Slow,
+    Stun,
+    Taunt,
+    DefenseBuff,
+    SpeedBuff,
+    Invincibility,
+    DamageAmplify,
+    HealOverTime,
+    Shield
   };
 
 } // namespace rpg

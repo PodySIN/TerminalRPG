@@ -1,25 +1,27 @@
 #include "effect_manager.hpp"
+#include <memory>
 #include "actor.hpp"
 #include "effects.hpp"
-#include <memory>
 
-rpg::EffectManager::EffectManager(Actor* owner) : owner_(owner)
-{
-}
+rpg::EffectManager::EffectManager(Actor* owner):
+  owner_(owner)
+{}
 
 void rpg::EffectManager::addEffect(std::unique_ptr< Effect > effect)
 {
+  if (!effect) {
+    return;
+  }
   if (effect->isStackable()) {
     effect->onApply(owner_);
     effects_.push_back(std::move(effect));
   } else {
-    std::unique_ptr< Effect > effect_on_owner =
-        owner_->getEffectManager().isActorHasEffect(effect->getEffectType());
-    if (!effect_on_owner) {
+    Effect* existing = getEffect(effect->getEffectType());
+    if (!existing) {
       effect->onApply(owner_);
       effects_.push_back(std::move(effect));
     } else {
-      effect_on_owner->doOnStack(effect.get());
+      existing->doOnStack(effect.get());
     }
   }
 }
@@ -40,13 +42,39 @@ void rpg::EffectManager::update()
   }
 }
 
-std::unique_ptr< rpg::Effect >
-rpg::EffectManager::isActorHasEffect(EffectType type) const
+rpg::Effect* rpg::EffectManager::getEffect(EffectType type) const
 {
   for (const auto& effect : effects_) {
-    if (effect->getEffectType() == type) {
-      return std::unique_ptr< Effect >(effect.get());
+    if (effect && effect->getEffectType() == type) {
+      return effect.get();
     }
   }
   return nullptr;
+}
+
+bool rpg::EffectManager::hasEffect(EffectType type) const
+{
+  return getEffect(type) != nullptr;
+}
+
+void rpg::EffectManager::removeAllEffects()
+{
+  for (auto& effect : effects_) {
+    if (effect) {
+      effect->onRemove(owner_);
+    }
+  }
+  effects_.clear();
+}
+
+void rpg::EffectManager::removeNegativeEffects()
+{
+  for (auto it = effects_.begin(); it != effects_.end();) {
+    if ((*it)->isHarmful()) {
+      (*it)->onRemove(owner_);
+      it = effects_.erase(it);
+    } else {
+      ++it;
+    }
+  }
 }

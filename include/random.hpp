@@ -9,6 +9,6 @@ namespace rpg {
 
     Random() = delete;
   };
-} // namespace rpg
+}
 
 #endif

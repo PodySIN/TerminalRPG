@@ -1,9 +1,9 @@
 #ifndef EFFECT_MANAGER_HPP
 #define EFFECT_MANAGER_HPP
 
-#include "effects.hpp"
 #include <memory>
 #include <vector>
+#include "effects.hpp"
 
 namespace rpg {
   class Actor;
@@ -13,12 +13,16 @@ namespace rpg {
     EffectManager(Actor* owner);
     void addEffect(std::unique_ptr< Effect > effect);
     void update();
-    std::unique_ptr< Effect > isActorHasEffect(EffectType type) const;
+    bool hasEffect(EffectType type) const;
+    Effect* getEffect(EffectType type) const;
+    void removeAllEffects();
+    void removeNegativeEffects();
 
   private:
     Actor* owner_;
     std::vector< std::unique_ptr< Effect > > effects_;
   };
 
-} // namespace rpg
+}
+
 #endif

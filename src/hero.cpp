@@ -1,29 +1,207 @@
 #include "hero.hpp"
+#include <iostream>
 #include "actor_config.hpp"
-#include "types.hpp"
+#include "skills.hpp"
 
-rpg::Hero::Hero(const ActorConfig& config) : Actor(config)
+rpg::Hero::Hero(const ActorConfig& config):
+  Actor(config)
 {
   hero_class_ = config.hero_class;
 }
 
-bool rpg::Hero::getIsDead() const
-{
-  return is_dead_;
-}
-
-void rpg::Hero::setIsDead(bool is_dead)
-{
-  is_dead_ = is_dead;
-}
-
 void rpg::Hero::die()
 {
-  setIsDead(true);
-  return;
+  getStats().setIsDead(true);
+  std::cout << getClassName() << " has died!\n";
 }
 
 rpg::HeroClass rpg::Hero::getHeroClass() const
 {
   return hero_class_;
+}
+
+rpg::Knight::Knight():
+  Hero(Presets::Knight())
+{
+  getStats().getCurrentResource() = getStats().getResource().getTotal();
+  setupSkills();
+}
+
+std::string rpg::Knight::getClassName() const
+{
+  return "Knight";
+}
+
+void rpg::Knight::setupSkills()
+{
+  auto slash = std::make_unique< KnightSlash >();
+  auto shield = std::make_unique< ShieldBash >();
+  auto ult1 = std::make_unique< KnightUltimate1 >();
+
+  getSkillManager().addSkill(std::move(slash));
+  getSkillManager().addSkill(std::move(shield));
+  getSkillManager().addSkill(std::move(ult1));
+
+  auto taunt = std::make_unique< Taunt >();
+  auto protection = std::make_unique< KnightProtection >();
+  auto ult2 = std::make_unique< KnightUltimate2 >();
+
+  getSkillManager().addLockedSkill(std::move(taunt));
+  getSkillManager().addLockedSkill(std::move(protection));
+  getSkillManager().addLockedSkill(std::move(ult2));
+}
+
+rpg::Mage::Mage():
+  Hero(Presets::Mage())
+{
+  getStats().getCurrentResource() = getStats().getResource().getTotal();
+  setupSkills();
+}
+
+std::string rpg::Mage::getClassName() const
+{
+  return "Mage";
+}
+
+void rpg::Mage::setupSkills()
+{
+  auto fireball = std::make_unique< Fireball >();
+  auto ice = std::make_unique< IceShard >();
+  auto lightning = std::make_unique< LightningStrike >();
+
+  getSkillManager().addSkill(std::move(fireball));
+  getSkillManager().addSkill(std::move(ice));
+  getSkillManager().addSkill(std::move(lightning));
+
+  auto mana_shield = std::make_unique< ManaShield >();
+  auto ult1 = std::make_unique< MageUltimate1 >();
+  auto ult2 = std::make_unique< MageUltimate2 >();
+
+  getSkillManager().addLockedSkill(std::move(mana_shield));
+  getSkillManager().addLockedSkill(std::move(ult1));
+  getSkillManager().addLockedSkill(std::move(ult2));
+}
+
+rpg::Assassin::Assassin():
+  Hero(Presets::Assassin())
+{
+  getStats().getCurrentResource() = getStats().getResource().getTotal();
+  setupSkills();
+}
+
+std::string rpg::Assassin::getClassName() const
+{
+  return "Assassin";
+}
+
+void rpg::Assassin::setupSkills()
+{
+  auto backstab = std::make_unique< Backstab >();
+  auto poison = std::make_unique< PoisonDagger >();
+  auto shadow = std::make_unique< ShadowStep >();
+
+  getSkillManager().addSkill(std::move(backstab));
+  getSkillManager().addSkill(std::move(poison));
+  getSkillManager().addSkill(std::move(shadow));
+
+  auto evasion = std::make_unique< SpeedBoost >();
+  auto ult1 = std::make_unique< AssassinUltimate1 >();
+  auto ult2 = std::make_unique< AssassinUltimate2 >();
+
+  getSkillManager().addLockedSkill(std::move(evasion));
+  getSkillManager().addLockedSkill(std::move(ult1));
+  getSkillManager().addLockedSkill(std::move(ult2));
+}
+
+rpg::Paladin::Paladin():
+  Hero(Presets::Paladin())
+{
+  getStats().getCurrentResource() = getStats().getResource().getTotal();
+  setupSkills();
+}
+
+std::string rpg::Paladin::getClassName() const
+{
+  return "Paladin";
+}
+
+void rpg::Paladin::setupSkills()
+{
+  auto holy = std::make_unique< HolyStrike >();
+  auto shield = std::make_unique< DivineShield >();
+  auto light = std::make_unique< HolyLight >();
+
+  getSkillManager().addSkill(std::move(holy));
+  getSkillManager().addSkill(std::move(shield));
+  getSkillManager().addSkill(std::move(light));
+
+  auto aura = std::make_unique< AuraOfProtection >();
+  auto ult1 = std::make_unique< PaladinUltimate1 >();
+  auto ult2 = std::make_unique< PaladinUltimate2 >();
+
+  getSkillManager().addLockedSkill(std::move(aura));
+  getSkillManager().addLockedSkill(std::move(ult1));
+  getSkillManager().addLockedSkill(std::move(ult2));
+}
+
+rpg::Priest::Priest():
+  Hero(Presets::Priest())
+{
+  getStats().getCurrentResource() = getStats().getResource().getTotal();
+  setupSkills();
+}
+
+std::string rpg::Priest::getClassName() const
+{
+  return "Priest";
+}
+
+void rpg::Priest::setupSkills()
+{
+  auto smite = std::make_unique< Smite >();
+  auto heal = std::make_unique< HealPrayer >();
+  auto shield = std::make_unique< ShieldOfFaith >();
+
+  getSkillManager().addSkill(std::move(smite));
+  getSkillManager().addSkill(std::move(heal));
+  getSkillManager().addSkill(std::move(shield));
+
+  auto renew = std::make_unique< Renew >();
+  auto ult1 = std::make_unique< PriestUltimate1 >();
+  auto ult2 = std::make_unique< PriestUltimate2 >();
+
+  getSkillManager().addLockedSkill(std::move(renew));
+  getSkillManager().addLockedSkill(std::move(ult1));
+  getSkillManager().addLockedSkill(std::move(ult2));
+}
+
+rpg::Archer::Archer():
+  Hero(Presets::Archer())
+{
+  getStats().getCurrentResource() = getStats().getResource().getTotal();
+  setupSkills();
+}
+
+std::string rpg::Archer::getClassName() const
+{
+  return "Archer";
+}
+
+void rpg::Archer::setupSkills()
+{
+  auto quick = std::make_unique< QuickShot >();
+  auto aimed = std::make_unique< AimedShot >();
+  auto piercing = std::make_unique< PiercingArrow >();
+
+  getSkillManager().addSkill(std::move(quick));
+  getSkillManager().addSkill(std::move(aimed));
+  getSkillManager().addSkill(std::move(piercing));
+
+  auto hawk = std::make_unique< HawkEye >();
+  auto ult1 = std::make_unique< ArcherUltimate1 >();
+  auto ult2 = std::make_unique< ArcherUltimate2 >();
+
+  getSkillManager().addLockedSkill(std::move(hawk));
+  getSkillManager().addLockedSkill(std::move(ult1));
+  getSkillManager().addLockedSkill(std::move(ult2));
 }

@@ -2,8 +2,7 @@
 #include <chrono>
 #include <random>
 
-static std::mt19937
-    generator(std::chrono::steady_clock::now().time_since_epoch().count());
+static std::mt19937 generator(std::chrono::steady_clock::now().time_since_epoch().count());
 
 int rpg::Random::getInt(int min, int max)
 {

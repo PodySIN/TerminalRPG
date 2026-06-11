@@ -1,13 +1,19 @@
 #ifndef HERO_ACCOUNT_HPP
 #define HERO_ACCOUNT_HPP
 
-#include "hero.hpp"
-#include "types.hpp"
 #include <memory>
 #include <string>
 #include <vector>
+#include "hero.hpp"
+#include "types.hpp"
 
 namespace rpg {
+
+  struct DungeonProgress {
+    std::string dungeon_name;
+    size_t attempts = 0;
+    size_t completions = 0;
+  };
 
   struct UnitSaveData {
     std::string name = "";
@@ -49,13 +55,38 @@ namespace rpg {
     size_t current_stage = 1;
     HeroAccount() = default;
     HeroAccount(const std::string& name);
+
     std::vector< UnitSaveData > party;
     std::vector< std::unique_ptr< Hero > > party_ptrs;
 
     void applyToHeroes();
     void loadFromHeroes();
+
+    // Данжи
+    std::vector< DungeonProgress > dungeon_stats;
+    std::string active_dungeon; // Выбранный или активный данж ("" = ничего)
+    size_t current_dungeon_floor = 1;
+    bool dungeon_started = false; // Начата ли игра? (герои сброшены)
+
+    DungeonProgress* findDungeonStats(const std::string& name);
+    void chooseDungeon(const std::string& dungeon_name);
+    void startDungeon();
+    void completeDungeon();
+    void failDungeon();
+    void abandonDungeon();
+    void resetHeroes();
+
+    bool hasDungeon() const
+    {
+      return !active_dungeon.empty();
+    }
+
+    bool isDungeonStarted() const
+    {
+      return dungeon_started;
+    }
   };
 
-} // namespace rpg
+}
 
 #endif

@@ -1,4 +1,7 @@
 #include "hero_account.hpp"
+#include <iostream>
+#include "hero_factory.hpp"
+#include "dungeon.hpp"
 
 void rpg::UnitSaveData::applyTo(Hero& hero) const
 {
@@ -85,6 +88,119 @@ void rpg::HeroAccount::loadFromHeroes()
   }
 }
 
-rpg::HeroAccount::HeroAccount(const std::string& name) : account_name(name)
+rpg::HeroAccount::HeroAccount(const std::string& name):
+  account_name(name)
+{}
+
+rpg::DungeonProgress* rpg::HeroAccount::findDungeonStats(const std::string& name)
 {
+  for (auto& stat : dungeon_stats) {
+    if (stat.dungeon_name == name)
+      return &stat;
+  }
+  return nullptr;
+}
+
+void rpg::HeroAccount::chooseDungeon(const std::string& dungeon_name)
+{
+  Dungeon temp;
+  if (!temp.load(dungeon_name)) {
+    std::cout << "<INVALID COMMAND> — dungeon not found\n";
+    return;
+  }
+
+  if (dungeon_started) {
+    std::cout << "Already in dungeon: " << active_dungeon << "\n";
+    std::cout << "Use 'abandon-dungeon' first\n";
+    return;
+  }
+
+  active_dungeon = dungeon_name;
+  dungeon_started = false;
+  std::cout << "DUNGEON CHOSEN: " << dungeon_name << "\n";
+  std::cout << "Type 'join-world' to start\n";
+}
+
+void rpg::HeroAccount::startDungeon()
+{
+  if (active_dungeon.empty()) {
+    std::cout << "No dungeon chosen. Use 'choose-dungeon <name>' first\n";
+    return;
+  }
+
+  if (dungeon_started) {
+    std::cout << "CONTINUING DUNGEON: " << active_dungeon << "\n";
+    std::cout << "Current floor: " << current_dungeon_floor << "\n";
+    return;
+  }
+
+  resetHeroes();
+
+  auto* stats = findDungeonStats(active_dungeon);
+  if (!stats) {
+    DungeonProgress new_stat;
+    new_stat.dungeon_name = active_dungeon;
+    new_stat.attempts = 1;
+    dungeon_stats.push_back(new_stat);
+  } else {
+    stats->attempts++;
+  }
+
+  current_dungeon_floor = 1;
+  dungeon_started = true;
+
+  std::cout << "DUNGEON STARTED: " << active_dungeon << "\n";
+  std::cout << "Entering Floor 1...\n";
+}
+
+void rpg::HeroAccount::completeDungeon()
+{
+  auto* stats = findDungeonStats(active_dungeon);
+  if (stats) {
+    stats->completions++;
+  }
+
+  std::cout << "DUNGEON COMPLETED: " << active_dungeon << "\n";
+
+  active_dungeon = "";
+  current_dungeon_floor = 1;
+  dungeon_started = false;
+}
+
+void rpg::HeroAccount::failDungeon()
+{
+  std::cout << "DUNGEON FAILED — heroes reset\n";
+
+  active_dungeon = "";
+  current_dungeon_floor = 1;
+  dungeon_started = false;
+
+  resetHeroes();
+}
+
+void rpg::HeroAccount::abandonDungeon()
+{
+  if (active_dungeon.empty()) {
+    std::cout << "No dungeon chosen or active\n";
+    return;
+  }
+
+  if (dungeon_started) {
+    std::cout << "ABANDONING ACTIVE DUNGEON: " << active_dungeon << "\n";
+    failDungeon();
+  } else {
+    std::cout << "ABANDONING CHOSEN DUNGEON: " << active_dungeon << "\n";
+    active_dungeon = "";
+    dungeon_started = false;
+  }
+}
+
+void rpg::HeroAccount::resetHeroes()
+{
+  party_ptrs.clear();
+  for (auto& data : party) {
+    auto hero = createHeroByClass(data.hero_class);
+    data.applyTo(*hero);
+    party_ptrs.push_back(std::move(hero));
+  }
 }

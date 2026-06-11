@@ -1,10 +1,10 @@
 #ifndef REWARD_HPP
 #define REWARD_HPP
 
-#include "hero.hpp"
 #include <memory>
 #include <string>
 #include <vector>
+#include "hero.hpp"
 
 namespace rpg {
 
@@ -64,15 +64,6 @@ namespace rpg {
     float amount_;
   };
 
-  class EvasionReward : public Reward {
-  public:
-    EvasionReward(float amount);
-    void apply(Hero& hero) const override;
-
-  private:
-    float amount_;
-  };
-
   class CritChanceReward : public Reward {
   public:
     CritChanceReward(float amount);
@@ -91,22 +82,14 @@ namespace rpg {
     float amount_;
   };
 
-  class BlockDamageReward : public Reward {
+  class SkillLevelReward : public Reward {
   public:
-    BlockDamageReward(float amount);
+    SkillLevelReward(size_t skill_index, size_t levels);
     void apply(Hero& hero) const override;
 
   private:
-    float amount_;
-  };
-
-  class MagicResistanceReward : public Reward {
-  public:
-    MagicResistanceReward(float amount);
-    void apply(Hero& hero) const override;
-
-  private:
-    float amount_;
+    size_t skill_index_;
+    size_t levels_;
   };
 
   class PercentHealthReward : public Reward {
@@ -127,15 +110,55 @@ namespace rpg {
     float percent_;
   };
 
-  class RewardFactory {
+  class PercentDefenseReward : public Reward {
   public:
-    static std::unique_ptr< Reward > createRandomCommonReward();
-    static std::unique_ptr< Reward > createRandomRareReward();
-    static std::unique_ptr< Reward > createRandomEpicReward();
-    static std::vector< std::unique_ptr< Reward > > generateRewards(int count,
-                                                                    int floor);
+    PercentDefenseReward(float percent);
+    void apply(Hero& hero) const override;
+
+  private:
+    float percent_;
   };
 
-} // namespace rpg
+  class PercentSpeedReward : public Reward {
+  public:
+    PercentSpeedReward(float percent);
+    void apply(Hero& hero) const override;
+
+  private:
+    float percent_;
+  };
+
+  class UnlockSkillReward : public Reward {
+  public:
+    UnlockSkillReward();
+    void apply(Hero& hero) const override;
+
+    static bool hasLockedSkills(const Hero& hero);
+  };
+
+  class MultiSkillLevelReward : public Reward {
+  public:
+    MultiSkillLevelReward(size_t levels);
+    void apply(Hero& hero) const override;
+
+  private:
+    size_t levels_;
+  };
+
+  class FullHealReward : public Reward {
+  public:
+    FullHealReward();
+    void apply(Hero& hero) const override;
+  };
+
+  class RewardFactory {
+  public:
+    static std::unique_ptr< Reward > createRandomCommonReward(int floor = 1);
+    static std::unique_ptr< Reward > createRandomRareReward(const Hero& hero, int floor = 1);
+    static std::vector< std::unique_ptr< Reward > > generateCommonRewards(int floor);
+    static std::vector< std::unique_ptr< Reward > > generateRareRewards(const Hero& hero, int floor);
+  };
+
+}
 
 #endif

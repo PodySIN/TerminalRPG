@@ -49,7 +49,7 @@ rpg::ActorType rpg::Actor::getActorType() const
   return actor_type_;
 }
 
-rpg::Actor::Actor(const ActorConfig& config) :
+rpg::Actor::Actor(const ActorConfig& config):
   stats_(),
   effect_manager_(this),
   skill_manager_(this),

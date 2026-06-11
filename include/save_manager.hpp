@@ -1,12 +1,11 @@
 #ifndef SAVE_MANAGER_HPP
 #define SAVE_MANAGER_HPP
 
-#include "hero_account.hpp"
 #include <string>
 #include <vector>
+#include "hero_account.hpp"
 
 namespace rpg {
-
   class SaveManager {
   public:
     static void save(const HeroAccount& account);
@@ -24,6 +23,6 @@ namespace rpg {
     static const std::string saves_dir_;
   };
 
-} // namespace rpg
+}
 
 #endif
