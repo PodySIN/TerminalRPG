@@ -154,17 +154,23 @@ namespace rpg {
 
   class TauntEffect : public Effect {
   public:
-    TauntEffect(size_t duration);
+    TauntEffect(size_t duration, Actor* taunter = nullptr);
     TauntEffect();
     bool isStackable() const override;
     void doOnStack(Effect* effect) override;
     bool isHarmful() const override;
     std::unique_ptr< Effect > clone() const override;
 
+    Actor* getTaunter() const
+    {
+      return taunter_;
+    }
+
   private:
     void doOnApply(Actor* owner) override;
     void doOnTick(Actor* owner) override;
     void doOnRemove(Actor* owner) override;
+    Actor* taunter_ = nullptr;
   };
 
   class DefenseBuffEffect : public Effect {
@@ -265,6 +271,32 @@ namespace rpg {
     void doOnRemove(Actor* owner) override;
   };
 
+  class CritChanceBuffEffect : public Effect {
+  public:
+    CritChanceBuffEffect(size_t duration, float amount);
+    CritChanceBuffEffect();
+
+    bool isStackable() const override
+    {
+      return true;
+    }
+
+    bool isHarmful() const override
+    {
+      return false;
+    }
+
+    std::unique_ptr< Effect > clone() const override;
+    void doOnApply(Actor* owner) override;
+
+    void doOnTick(Actor*) override
+    {}
+
+    void doOnRemove(Actor* owner) override;
+
+  private:
+    float amount_;
+  };
 }
 
 #endif

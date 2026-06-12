@@ -4,7 +4,7 @@
 namespace rpg {
 
   struct BaseStat {
-    float base_ = 0.1f;
+    float base_ = 1.0f;
     void addBase(float value);
     void setBase(float value);
     float getBase() const;
@@ -51,6 +51,8 @@ namespace rpg {
     const float& getCurrentResource() const;
 
     float getShield() const;
+    float getResourceRegen() const;
+    void setResourceRegen(float value);
     void setShield(float value);
     void addShield(float value);
     void removeShield(float value);
@@ -81,6 +83,7 @@ namespace rpg {
     bool invincible_ = false;
     bool stunned_ = false;
     bool is_dead_ = false;
+    float resource_regen_ = 10.0f;
   };
 }
 

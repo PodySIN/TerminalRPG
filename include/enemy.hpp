@@ -12,25 +12,11 @@ namespace rpg {
     void die() override;
     virtual std::string getType() const = 0;
 
-    virtual std::string getName() const
-    {
-      return name_;
-    }
+    virtual std::string getName() const override;
 
-    void setName(const std::string& name)
-    {
-      name_ = name;
-    }
-
-    size_t getStage() const
-    {
-      return stage_;
-    }
-
-    void setStage(size_t stage)
-    {
-      stage_ = stage;
-    }
+    void setName(const std::string& name);
+    size_t getStage() const;
+    void setStage(size_t stage);
 
   protected:
     std::string name_;
@@ -41,253 +27,161 @@ namespace rpg {
   public:
     Goblin(size_t stage = 1);
     void setupSkills();
-
-    std::string getType() const override
-    {
-      return "Goblin";
-    }
+    std::string getType() const override;
   };
 
   class Wolf : public Enemy {
   public:
     Wolf(size_t stage = 1);
     void setupSkills();
-
-    std::string getType() const override
-    {
-      return "Wolf";
-    }
+    std::string getType() const override;
   };
 
   class Skeleton : public Enemy {
   public:
     Skeleton(size_t stage = 1);
     void setupSkills();
-
-    std::string getType() const override
-    {
-      return "Skeleton";
-    }
+    std::string getType() const override;
   };
 
   class Slime : public Enemy {
   public:
     Slime(size_t stage = 1);
     void setupSkills();
-
-    std::string getType() const override
-    {
-      return "Slime";
-    }
+    std::string getType() const override;
   };
 
   class Bat : public Enemy {
   public:
     Bat(size_t stage = 1);
     void setupSkills();
-
-    std::string getType() const override
-    {
-      return "Bat";
-    }
+    std::string getType() const override;
   };
 
   class Spider : public Enemy {
   public:
     Spider(size_t stage = 1);
     void setupSkills();
-
-    std::string getType() const override
-    {
-      return "Spider";
-    }
+    std::string getType() const override;
   };
 
   class Zombie : public Enemy {
   public:
     Zombie(size_t stage = 1);
     void setupSkills();
-
-    std::string getType() const override
-    {
-      return "Zombie";
-    }
+    std::string getType() const override;
   };
 
   class Cultist : public Enemy {
   public:
     Cultist(size_t stage = 1);
     void setupSkills();
-
-    std::string getType() const override
-    {
-      return "Cultist";
-    }
+    std::string getType() const override;
   };
 
   class Bandit : public Enemy {
   public:
     Bandit(size_t stage = 1);
     void setupSkills();
-
-    std::string getType() const override
-    {
-      return "Bandit";
-    }
+    std::string getType() const override;
   };
 
   class Imp : public Enemy {
   public:
     Imp(size_t stage = 1);
     void setupSkills();
-
-    std::string getType() const override
-    {
-      return "Imp";
-    }
+    std::string getType() const override;
   };
 
   class Harpy : public Enemy {
   public:
     Harpy(size_t stage = 1);
     void setupSkills();
-
-    std::string getType() const override
-    {
-      return "Harpy";
-    }
+    std::string getType() const override;
   };
 
   class Mummy : public Enemy {
   public:
     Mummy(size_t stage = 1);
     void setupSkills();
-
-    std::string getType() const override
-    {
-      return "Mummy";
-    }
+    std::string getType() const override;
   };
 
   class OrcWarrior : public Enemy {
   public:
     OrcWarrior(size_t stage = 1);
     void setupSkills();
-
-    std::string getType() const override
-    {
-      return "Orc Warrior";
-    }
+    std::string getType() const override;
   };
 
   class DarkElf : public Enemy {
   public:
     DarkElf(size_t stage = 1);
     void setupSkills();
-
-    std::string getType() const override
-    {
-      return "Dark Elf";
-    }
+    std::string getType() const override;
   };
 
   class StoneGolem : public Enemy {
   public:
     StoneGolem(size_t stage = 1);
     void setupSkills();
-
-    std::string getType() const override
-    {
-      return "Stone Golem";
-    }
+    std::string getType() const override;
   };
 
   class FireElemental : public Enemy {
   public:
     FireElemental(size_t stage = 1);
     void setupSkills();
-
-    std::string getType() const override
-    {
-      return "Fire Elemental";
-    }
+    std::string getType() const override;
   };
 
   class IceElemental : public Enemy {
   public:
     IceElemental(size_t stage = 1);
     void setupSkills();
-
-    std::string getType() const override
-    {
-      return "Ice Elemental";
-    }
+    std::string getType() const override;
   };
 
   class Thunderbird : public Enemy {
   public:
     Thunderbird(size_t stage = 1);
     void setupSkills();
-
-    std::string getType() const override
-    {
-      return "Thunderbird";
-    }
+    std::string getType() const override;
   };
 
   class ShadowAssassin : public Enemy {
   public:
     ShadowAssassin(size_t stage = 1);
     void setupSkills();
-
-    std::string getType() const override
-    {
-      return "Shadow Assassin";
-    }
+    std::string getType() const override;
   };
 
   class AncientTreant : public Enemy {
   public:
     AncientTreant(size_t stage = 1);
     void setupSkills();
-
-    std::string getType() const override
-    {
-      return "Ancient Treant";
-    }
+    std::string getType() const override;
   };
 
   class TrollKing : public Enemy {
   public:
     TrollKing(size_t stage = 1);
     void setupSkills();
-
-    std::string getType() const override
-    {
-      return "Troll King";
-    }
+    std::string getType() const override;
   };
 
   class Dragon : public Enemy {
   public:
     Dragon(size_t stage = 1);
     void setupSkills();
-
-    std::string getType() const override
-    {
-      return "Dragon";
-    }
+    std::string getType() const override;
   };
 
   class Lich : public Enemy {
   public:
     Lich(size_t stage = 1);
     void setupSkills();
-
-    std::string getType() const override
-    {
-      return "Lich";
-    }
+    std::string getType() const override;
   };
 
 }

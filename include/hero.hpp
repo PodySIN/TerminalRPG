@@ -18,6 +18,7 @@ namespace rpg {
 
     virtual void setupSkills() = 0;
     virtual std::string getClassName() const = 0;
+    std::string getName() const override;
 
   protected:
     HeroClass hero_class_;

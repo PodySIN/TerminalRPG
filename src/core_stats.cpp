@@ -216,3 +216,13 @@ void rpg::CoreStats::setIsDead(bool is_dead)
 {
   is_dead_ = is_dead;
 }
+
+float rpg::CoreStats::getResourceRegen() const
+{
+  return resource_regen_;
+}
+
+void rpg::CoreStats::setResourceRegen(float value)
+{
+  resource_regen_ = value;
+}

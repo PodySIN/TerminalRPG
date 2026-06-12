@@ -315,12 +315,9 @@ void rpg::StunEffect::doOnRemove(rpg::Actor* owner)
   owner->getStats().setStunned(false);
 }
 
-rpg::TauntEffect::TauntEffect(size_t duration):
-  rpg::Effect(rpg::EffectType::Taunt, duration)
-{}
-
-rpg::TauntEffect::TauntEffect():
-  rpg::TauntEffect(2)
+rpg::TauntEffect::TauntEffect(size_t duration, Actor* taunter):
+  Effect(EffectType::Taunt, duration),
+  taunter_(taunter)
 {}
 
 bool rpg::TauntEffect::isStackable() const
@@ -649,4 +646,28 @@ bool rpg::HealOverTimeEffect::isHarmful() const
 bool rpg::InvincibilityEffect::isHarmful() const
 {
   return false;
+}
+
+rpg::CritChanceBuffEffect::CritChanceBuffEffect(size_t duration, float amount):
+  Effect(EffectType::DamageBuff, duration),
+  amount_(amount)
+{}
+
+rpg::CritChanceBuffEffect::CritChanceBuffEffect():
+  CritChanceBuffEffect(3, 0.15f)
+{}
+
+std::unique_ptr< rpg::Effect > rpg::CritChanceBuffEffect::clone() const
+{
+  return std::make_unique< CritChanceBuffEffect >(*this);
+}
+
+void rpg::CritChanceBuffEffect::doOnApply(Actor* owner)
+{
+  owner->getStats().getCritChance().addBase(amount_);
+}
+
+void rpg::CritChanceBuffEffect::doOnRemove(Actor* owner)
+{
+  owner->getStats().getCritChance().addBase(-amount_);
 }

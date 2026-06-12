@@ -55,6 +55,19 @@ namespace rpg {
     Shield
   };
 
-} // namespace rpg
+  enum class SkillTarget {
+    Enemy,
+    Ally,
+    Self,
+    AllEnemies,
+    AllAllies
+  };
+  enum class RewardQuality {
+    Common,
+    Rare,
+    Epic,
+    Legendary
+  };
+}
 
 #endif

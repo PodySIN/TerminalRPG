@@ -126,3 +126,31 @@ size_t rpg::SkillManager::getSkillCount() const
 {
   return skills_.size();
 }
+
+float rpg::SkillManager::getSkillCost(size_t index) const
+{
+  if (index >= skills_.size() || !skills_[index])
+    return 0.0f;
+  return skills_[index]->getResourceCost();
+}
+
+std::string rpg::SkillManager::getSkillDescription(size_t index) const
+{
+  if (index >= skills_.size() || !skills_[index])
+    return "";
+  return skills_[index]->getDescription();
+}
+
+rpg::SkillTarget rpg::SkillManager::getSkillTargetType(size_t index) const
+{
+  if (index >= skills_.size() || !skills_[index])
+    return SkillTarget::Enemy;
+  return skills_[index]->getTargetType();
+}
+
+size_t rpg::SkillManager::getSkillLevel(size_t index) const
+{
+  if (index >= skills_.size() || !skills_[index])
+    return 0;
+  return skills_[index]->getSkillLevel();
+}

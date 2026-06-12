@@ -233,21 +233,6 @@ void rpg::pg::exitToMenu(rpg::HeroAccount& account)
   std::cout << "Returning to main menu...\n";
 }
 
-void rpg::pg::fight()
-{}
-
-void rpg::pg::choosePath()
-{}
-
-void rpg::pg::useSkill()
-{}
-
-void rpg::pg::showBonuses()
-{}
-
-void rpg::pg::chooseBonus()
-{}
-
 static bool admin_active = false;
 static bool modify_active = false;
 static rpg::DungeonAdmin dungeonAdmin;
@@ -270,6 +255,7 @@ void rpg::adm::adminMode(std::istream&, std::ostream& out, rpg::HeroAccount&)
   out << "\n╔═══════════════════════════════════════╗\n";
   out << "║           ADMIN MODE ACTIVE           ║\n";
   out << "╠═══════════════════════════════════════╣\n";
+  out << "║  show-commands                        ║\n";
   out << "║  create-dungeon <name> <floors>       ║\n";
   out << "║  generate-dungeon <name> <floors>     ║\n";
   out << "║  modify-dungeon <name>                ║\n";
@@ -367,6 +353,7 @@ void rpg::adm::modifyMode(std::istream& in, std::ostream& out)
   out << "\n╔══════════════════════════════════════════════════════════╗\n";
   out << "║ MODIFY MODE: " << std::setw(44) << std::left << name << "║\n";
   out << "╠══════════════════════════════════════════════════════════╣\n";
+  out << "║      show-commands                                       ║\n";
   out << "║      add-stage <stage>                                   ║\n";
   out << "║      remove-stage <stage>                                ║\n";
   out << "║      add-path <stage> [desc]                             ║\n";
@@ -510,7 +497,22 @@ void rpg::adm::showStage(std::istream& in, std::ostream& out)
             << ")\n";
       }
     }
-    out << "  Reward: " << (r->reward_quality == rpg::DungeonRoom::RewardQuality::Rare ? "Rare" : "Common") << "\n\n";
+    out << "  Reward: ";
+    switch (r->reward_quality) {
+      case rpg::RewardQuality::Common:
+        out << "Common";
+        break;
+      case rpg::RewardQuality::Rare:
+        out << "Rare";
+        break;
+      case rpg::RewardQuality::Epic:
+        out << "Epic";
+        break;
+      case rpg::RewardQuality::Legendary:
+        out << "Legendary";
+        break;
+    }
+    out << "\n\n";
   }
 }
 
@@ -552,7 +554,22 @@ void rpg::adm::showPath(std::istream& in, std::ostream& out)
       out << "  " << (i + 1) << ". " << r->monsters[i]->getType() << " (Lvl " << r->monsters[i]->getStage() << ")\n";
     }
   }
-  out << "Reward: " << (r->reward_quality == rpg::DungeonRoom::RewardQuality::Rare ? "Rare" : "Common") << "\n";
+  out << "Reward: ";
+  switch (r->reward_quality) {
+    case rpg::RewardQuality::Common:
+      out << "Common";
+      break;
+    case rpg::RewardQuality::Rare:
+      out << "Rare";
+      break;
+    case rpg::RewardQuality::Epic:
+      out << "Epic";
+      break;
+    case rpg::RewardQuality::Legendary:
+      out << "Legendary";
+      break;
+  }
+  out << "\n";
 }
 
 void rpg::adm::addMonster(std::istream& in, std::ostream& out)
@@ -610,13 +627,17 @@ void rpg::adm::changeReward(std::istream& in, std::ostream& out)
   std::string quality;
   in >> stage >> path >> quality;
 
-  rpg::DungeonRoom::RewardQuality rq;
-  if (quality == "rare" || quality == "Rare" || quality == "RARE") {
-    rq = rpg::DungeonRoom::RewardQuality::Rare;
+  rpg::RewardQuality rq;
+  if (quality == "legendary" || quality == "Legendary") {
+    rq = rpg::RewardQuality::Legendary;
+  } else if (quality == "epic" || quality == "Epic") {
+    rq = rpg::RewardQuality::Epic;
+  } else if (quality == "rare" || quality == "Rare" || quality == "RARE") {
+    rq = rpg::RewardQuality::Rare;
   } else if (quality == "common" || quality == "Common" || quality == "COMMON") {
-    rq = rpg::DungeonRoom::RewardQuality::Common;
+    rq = rpg::RewardQuality::Common;
   } else {
-    out << "<INVALID COMMAND> — use 'common' or 'rare'\n";
+    out << "<INVALID COMMAND> — use 'common', 'rare', 'epic' or 'legendary'\n";
     return;
   }
 
@@ -635,5 +656,98 @@ void rpg::adm::showMonsterTypes(std::istream&, std::ostream& out)
   auto types = rpg::getAvailableEnemyTypes();
   for (size_t i = 0; i < types.size(); i++) {
     out << "  " << std::setw(2) << (i + 1) << ". " << types[i] << "\n";
+  }
+}
+
+void rpg::mmc::showCommands(std::istream&, std::ostream& out, rpg::HeroAccount&)
+{
+  out << "MAIN MENU COMMANDS:\n";
+  out << "  new-account <name>\n";
+  out << "  show-accounts\n";
+  out << "  show-account <name>\n";
+  out << "  delete-account <name>\n";
+  out << "  login <name>\n";
+  out << "  new-hero <class>\n";
+  out << "  choose-dungeon <name>\n";
+  out << "  show-dungeons\n";
+  out << "  abandon-dungeon\n";
+  out << "  dungeon-stats\n";
+  out << "  join-world\n";
+  out << "  admin-mode\n";
+  out << "  show-commands\n";
+  out << "  exit\n";
+}
+
+void rpg::adm::showAdminCommands(std::istream&, std::ostream& out)
+{
+  out << "ADMIN COMMANDS:\n";
+  out << "  create-dungeon <name> <floors>\n";
+  out << "  generate-dungeon <name> <floors>\n";
+  out << "  modify-dungeon <name>\n";
+  out << "  delete-dungeon <name>\n";
+  out << "  show-dungeon <name>\n";
+  out << "  show-dungeons\n";
+  out << "  show-commands\n";
+  out << "  exit-admin-mode\n";
+  out << "  exit\n";
+}
+
+void rpg::adm::showModifyCommands(std::istream&, std::ostream& out)
+{
+  out << "MODIFY COMMANDS:\n";
+  out << "  add-stage <pos>\n";
+  out << "  remove-stage <stage>\n";
+  out << "  add-path <stage> <desc>\n";
+  out << "  remove-path <stage> <path>\n";
+  out << "  show-stage <stage>\n";
+  out << "  show-path <stage> <path>\n";
+  out << "  add-monster <st> <p> <type> <lvl>\n";
+  out << "  remove-monster <st> <p> <idx>\n";
+  out << "  change-reward <st> <p> <common|rare>\n";
+  out << "  show-monsters\n";
+  out << "  show-dungeon\n";
+  out << "  show-commands\n";
+  out << "  exit-modify-mode\n";
+  out << "  exit\n";
+}
+
+void rpg::pg::showBattleCommands(std::istream&, std::ostream& out, rpg::HeroAccount&)
+{
+  out << "BATTLE COMMANDS:\n";
+  out << "  <skill_id> <target_id>  - Use skill on target\n";
+  out << "  save                    - Save game\n";
+  out << "  exit-to-menu            - Exit to main menu\n";
+  out << "  show-commands           - Show this help\n";
+  out << "  hero-stats              - Show all hero stats\n";
+}
+
+bool rpg::adm::isModifyActive()
+{
+  return modify_active;
+}
+
+void rpg::pg::showHeroStats(std::istream&, std::ostream& out, rpg::HeroAccount& account)
+{
+  for (auto& hero_ptr : account.party_ptrs) {
+    auto& s = hero_ptr->getStats();
+    out << "\n" << hero_ptr->getName() << ":\n";
+    out << "  HP:    " << (int)s.getCurrentHealth() << "/" << (int)s.getHealth().getTotal() << "\n";
+    out << "  MP:    " << (int)s.getCurrentResource() << "/" << (int)s.getResource().getTotal() << "\n";
+    out << "  REGEN: " << (int)s.getResourceRegen() << "/turn\n";
+    out << "  ATK:   " << (int)s.getDamage().getTotal() << "\n";
+    out << "  DEF:   " << (int)s.getDefense().getTotal() << "\n";
+    out << "  SPD:   " << (int)s.getSpeed().getTotal() << "\n";
+    out << "  CRIT:  " << (int)(s.getCritChance().getBase() * 100) << "%\n";
+    out << "  CRITD: " << (int)(s.getCritDamage().getBase() * 100) << "%\n";
+    out << "  BONUS: " << (int)(s.getDamageBonus().getBase() * 100) << "%\n";
+    out << "  REDUC: " << (int)(s.getDamageReduction().getBase() * 100) << "%\n";
+    out << "  SKILLS:\n";
+    auto& sm = hero_ptr->getSkillManager();
+    for (size_t i = 0; i < sm.getSkillCount(); i++) {
+      out << "    " << i << ". " << sm.getSkillName(i) << " (Lvl " << sm.getSkillLevel(i) << ")";
+      if (sm.isSkillLocked(i))
+        out << " [LOCKED]";
+      out << " — " << sm.getSkillDescription(i) << "\n";
+    }
   }
 }

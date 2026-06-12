@@ -25,6 +25,7 @@ rpg::Knight::Knight():
 {
   getStats().getCurrentResource() = getStats().getResource().getTotal();
   setupSkills();
+  hero_class_ = Presets::Knight().hero_class;
 }
 
 std::string rpg::Knight::getClassName() const
@@ -34,6 +35,8 @@ std::string rpg::Knight::getClassName() const
 
 void rpg::Knight::setupSkills()
 {
+  auto base = std::make_unique< rpg::BaseAttack >();
+  getSkillManager().addSkill(std::move(base));
   auto slash = std::make_unique< KnightSlash >();
   auto shield = std::make_unique< ShieldBash >();
   auto ult1 = std::make_unique< KnightUltimate1 >();
@@ -56,6 +59,7 @@ rpg::Mage::Mage():
 {
   getStats().getCurrentResource() = getStats().getResource().getTotal();
   setupSkills();
+  hero_class_ = Presets::Mage().hero_class;
 }
 
 std::string rpg::Mage::getClassName() const
@@ -65,6 +69,8 @@ std::string rpg::Mage::getClassName() const
 
 void rpg::Mage::setupSkills()
 {
+  auto base = std::make_unique< rpg::BaseAttack >();
+  getSkillManager().addSkill(std::move(base));
   auto fireball = std::make_unique< Fireball >();
   auto ice = std::make_unique< IceShard >();
   auto lightning = std::make_unique< LightningStrike >();
@@ -87,6 +93,7 @@ rpg::Assassin::Assassin():
 {
   getStats().getCurrentResource() = getStats().getResource().getTotal();
   setupSkills();
+  hero_class_ = Presets::Assassin().hero_class;
 }
 
 std::string rpg::Assassin::getClassName() const
@@ -96,6 +103,8 @@ std::string rpg::Assassin::getClassName() const
 
 void rpg::Assassin::setupSkills()
 {
+  auto base = std::make_unique< rpg::BaseAttack >();
+  getSkillManager().addSkill(std::move(base));
   auto backstab = std::make_unique< Backstab >();
   auto poison = std::make_unique< PoisonDagger >();
   auto shadow = std::make_unique< ShadowStep >();
@@ -118,6 +127,7 @@ rpg::Paladin::Paladin():
 {
   getStats().getCurrentResource() = getStats().getResource().getTotal();
   setupSkills();
+  hero_class_ = Presets::Paladin().hero_class;
 }
 
 std::string rpg::Paladin::getClassName() const
@@ -127,6 +137,8 @@ std::string rpg::Paladin::getClassName() const
 
 void rpg::Paladin::setupSkills()
 {
+  auto base = std::make_unique< rpg::BaseAttack >();
+  getSkillManager().addSkill(std::move(base));
   auto holy = std::make_unique< HolyStrike >();
   auto shield = std::make_unique< DivineShield >();
   auto light = std::make_unique< HolyLight >();
@@ -149,6 +161,7 @@ rpg::Priest::Priest():
 {
   getStats().getCurrentResource() = getStats().getResource().getTotal();
   setupSkills();
+  hero_class_ = Presets::Priest().hero_class;
 }
 
 std::string rpg::Priest::getClassName() const
@@ -158,6 +171,8 @@ std::string rpg::Priest::getClassName() const
 
 void rpg::Priest::setupSkills()
 {
+  auto base = std::make_unique< rpg::BaseAttack >();
+  getSkillManager().addSkill(std::move(base));
   auto smite = std::make_unique< Smite >();
   auto heal = std::make_unique< HealPrayer >();
   auto shield = std::make_unique< ShieldOfFaith >();
@@ -180,6 +195,7 @@ rpg::Archer::Archer():
 {
   getStats().getCurrentResource() = getStats().getResource().getTotal();
   setupSkills();
+  hero_class_ = Presets::Archer().hero_class;
 }
 
 std::string rpg::Archer::getClassName() const
@@ -189,6 +205,8 @@ std::string rpg::Archer::getClassName() const
 
 void rpg::Archer::setupSkills()
 {
+  auto base = std::make_unique< rpg::BaseAttack >();
+  getSkillManager().addSkill(std::move(base));
   auto quick = std::make_unique< QuickShot >();
   auto aimed = std::make_unique< AimedShot >();
   auto piercing = std::make_unique< PiercingArrow >();
@@ -204,4 +222,9 @@ void rpg::Archer::setupSkills()
   getSkillManager().addLockedSkill(std::move(hawk));
   getSkillManager().addLockedSkill(std::move(ult1));
   getSkillManager().addLockedSkill(std::move(ult2));
+}
+
+std::string rpg::Hero::getName() const
+{
+  return getClassName();
 }

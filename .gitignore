@@ -1,3 +1,6 @@
 game
 build/
 saves/
+.clang-format
+.clangd
+dungeons/

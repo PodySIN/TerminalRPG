@@ -13,8 +13,11 @@ namespace rpg {
 
   class Actor {
   public:
+    float current_av_ = 10000.0f / 100.0f;
+
     Actor(const ActorConfig& config);
     virtual ~Actor() = default;
+
     CoreStats& getStats();
     const CoreStats& getStats() const;
     EffectManager& getEffectManager();
@@ -25,6 +28,7 @@ namespace rpg {
     const DamageManager& getDamageManager() const;
     ActorType getActorType() const;
 
+    virtual std::string getName() const = 0;
     virtual void die() = 0;
 
   private:

@@ -10,13 +10,13 @@
 
 rpg::DungeonRoom::DungeonRoom():
   room_id(0),
-  reward_quality(rpg::DungeonRoom::RewardQuality::Common)
+  reward_quality(RewardQuality::Common)
 {}
 
 rpg::DungeonRoom::DungeonRoom(size_t id, const std::string& desc):
   room_id(id),
   description(desc),
-  reward_quality(rpg::DungeonRoom::RewardQuality::Common)
+  reward_quality(RewardQuality::Common)
 {}
 
 rpg::DungeonRoom::~DungeonRoom() = default;
@@ -153,7 +153,7 @@ void rpg::Dungeon::removeMonster(size_t floor_index, size_t room_index, size_t m
     r->monsters.erase(r->monsters.begin() + monster_index);
 }
 
-void rpg::Dungeon::setRewardQuality(size_t floor_index, size_t room_index, rpg::DungeonRoom::RewardQuality q)
+void rpg::Dungeon::setRewardQuality(size_t floor_index, size_t room_index, RewardQuality q)
 {
   auto* f = floor(floor_index);
   if (!f)
@@ -163,13 +163,13 @@ void rpg::Dungeon::setRewardQuality(size_t floor_index, size_t room_index, rpg::
     r->reward_quality = q;
 }
 
-rpg::DungeonRoom::RewardQuality rpg::Dungeon::rewardQuality(size_t floor_index, size_t room_index) const
+rpg::RewardQuality rpg::Dungeon::rewardQuality(size_t floor_index, size_t room_index) const
 {
   auto* f = floor(floor_index);
   if (!f)
-    return rpg::DungeonRoom::RewardQuality::Common;
+    return RewardQuality::Common;
   auto* r = f->room(room_index);
-  return r ? r->reward_quality : rpg::DungeonRoom::RewardQuality::Common;
+  return r ? r->reward_quality : RewardQuality::Common;
 }
 
 std::vector< std::unique_ptr< rpg::Reward > > rpg::Dungeon::generateRewards(rpg::Hero& hero) const
@@ -178,9 +178,18 @@ std::vector< std::unique_ptr< rpg::Reward > > rpg::Dungeon::generateRewards(rpg:
   if (!r)
     return {};
   int fnum = static_cast< int >(current_floor_) + 1;
-  if (r->reward_quality == rpg::DungeonRoom::RewardQuality::Rare)
-    return rpg::RewardFactory::generateRareRewards(hero, fnum);
-  return rpg::RewardFactory::generateCommonRewards(fnum);
+
+  switch (r->reward_quality) {
+    case RewardQuality::Common:
+      return rpg::RewardFactory::generateCommonRewards(fnum);
+    case RewardQuality::Rare:
+      return rpg::RewardFactory::generateRareRewards(hero, fnum);
+    case RewardQuality::Epic:
+      return rpg::RewardFactory::generateEpicRewards(hero, fnum);
+    case RewardQuality::Legendary:
+      return rpg::RewardFactory::generateLegendaryRewards(hero, fnum);
+  }
+  return {};
 }
 
 void rpg::Dungeon::start()
@@ -265,6 +274,22 @@ const rpg::DungeonFloor* rpg::Dungeon::currentFloor() const
   return floor(current_floor_);
 }
 
+std::string rpg::Dungeon::showProgress() const
+{
+  std::stringstream ss;
+  ss << "══════════════════════════════\n";
+  ss << "🗺️  " << name_ << "\n──────────────────────────────\n";
+  ss << "Floor " << (current_floor_ + 1) << " / " << floors_.size() << "\nStatus: ";
+  if (completed_)
+    ss << "✅ Completed\n";
+  else if (in_progress_)
+    ss << "⚔️ In Progress\n";
+  else
+    ss << "⏸️ Not Started\n";
+  ss << "══════════════════════════════\n";
+  return ss.str();
+}
+
 std::string rpg::Dungeon::showRoomChoice() const
 {
   auto* f = currentFloor();
@@ -290,8 +315,22 @@ std::string rpg::Dungeon::showRoomChoice() const
       }
       ss << "\n";
     }
-    ss << "      Reward: " << (r->reward_quality == rpg::DungeonRoom::RewardQuality::Rare ? "⭐ Rare" : "Common")
-       << "\n\n";
+    ss << "      Reward: ";
+    switch (r->reward_quality) {
+      case RewardQuality::Common:
+        ss << "Common";
+        break;
+      case RewardQuality::Rare:
+        ss << "⭐ Rare";
+        break;
+      case RewardQuality::Epic:
+        ss << "🌟 Epic";
+        break;
+      case RewardQuality::Legendary:
+        ss << "💎 Legendary";
+        break;
+    }
+    ss << "\n\n";
   }
   return ss.str();
 }
@@ -316,24 +355,22 @@ std::string rpg::Dungeon::showRoom() const
     for (size_t i = 0; i < r->monsters.size(); i++)
       ss << "  " << (i + 1) << ". " << r->monsters[i]->getType() << " (Lvl " << r->monsters[i]->getStage() << ")\n";
   }
-  ss << "🎁 Reward: " << (r->reward_quality == rpg::DungeonRoom::RewardQuality::Rare ? "⭐ Rare" : "Common") << "\n";
-  ss << "══════════════════════════════\n";
-  return ss.str();
-}
-
-std::string rpg::Dungeon::showProgress() const
-{
-  std::stringstream ss;
-  ss << "══════════════════════════════\n";
-  ss << "🗺️  " << name_ << "\n──────────────────────────────\n";
-  ss << "Floor " << (current_floor_ + 1) << " / " << floors_.size() << "\nStatus: ";
-  if (completed_)
-    ss << "✅ Completed\n";
-  else if (in_progress_)
-    ss << "⚔️ In Progress\n";
-  else
-    ss << "⏸️ Not Started\n";
-  ss << "══════════════════════════════\n";
+  ss << "🎁 Reward: ";
+  switch (r->reward_quality) {
+    case RewardQuality::Common:
+      ss << "Common";
+      break;
+    case RewardQuality::Rare:
+      ss << "⭐ Rare";
+      break;
+    case RewardQuality::Epic:
+      ss << "🌟 Epic";
+      break;
+    case RewardQuality::Legendary:
+      ss << "💎 Legendary";
+      break;
+  }
+  ss << "\n══════════════════════════════\n";
   return ss.str();
 }
 
@@ -356,8 +393,22 @@ std::string rpg::Dungeon::showFull() const
         for (const auto& m : r->monsters)
           ss << "         • " << m->getType() << " (Lvl " << m->getStage() << ")\n";
       }
-      ss << "       Reward: " << (r->reward_quality == rpg::DungeonRoom::RewardQuality::Rare ? "Rare" : "Common")
-         << "\n";
+      ss << "       Reward: ";
+      switch (r->reward_quality) {
+        case RewardQuality::Common:
+          ss << "Common";
+          break;
+        case RewardQuality::Rare:
+          ss << "Rare";
+          break;
+        case RewardQuality::Epic:
+          ss << "Epic";
+          break;
+        case RewardQuality::Legendary:
+          ss << "Legendary";
+          break;
+      }
+      ss << "\n";
     }
     ss << "\n";
   }
@@ -442,7 +493,7 @@ bool rpg::Dungeon::load(const std::string& filename)
       }
       int rq;
       file.read(reinterpret_cast< char* >(&rq), sizeof(rq));
-      room.reward_quality = static_cast< rpg::DungeonRoom::RewardQuality >(rq);
+      room.reward_quality = static_cast< RewardQuality >(rq);
       fl.rooms.push_back(std::move(room));
     }
     floors_.push_back(std::move(fl));

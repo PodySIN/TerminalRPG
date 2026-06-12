@@ -19,21 +19,20 @@ namespace rpg {
     void abandonDungeon(std::istream& in, std::ostream& out, HeroAccount& account);
     void showDungeonStats(std::istream& in, std::ostream& out, HeroAccount& account);
     void showDungeons(std::istream& in, std::ostream& out, HeroAccount& account);
+    void showCommands(std::istream&, std::ostream&, HeroAccount&);
   }
 
   namespace pg {
-    void save(HeroAccount& account);
     void exit();
+    void save(HeroAccount& account);
     void exitToMenu(HeroAccount& account);
-    void fight();
-    void choosePath();
-    void useSkill();
-    void showBonuses();
-    void chooseBonus();
+    void showHeroStats(std::istream&, std::ostream&, HeroAccount&);
+    void showBattleCommands(std::istream&, std::ostream&, HeroAccount&);
   }
 
   namespace adm {
     DungeonAdmin& getDungeonAdmin();
+    bool isModifyActive();
     void adminMode(std::istream& in, std::ostream& out, HeroAccount& account);
     void exitAdminMode(std::istream& in, std::ostream& out);
 
@@ -55,6 +54,8 @@ namespace rpg {
     void removeMonster(std::istream& in, std::ostream& out);
     void changeReward(std::istream& in, std::ostream& out);
     void showMonsterTypes(std::istream& in, std::ostream& out);
+    void showAdminCommands(std::istream&, std::ostream&);
+    void showModifyCommands(std::istream&, std::ostream&);
   }
 }
 

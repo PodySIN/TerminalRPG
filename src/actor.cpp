@@ -66,4 +66,5 @@ rpg::Actor::Actor(const ActorConfig& config):
   getStats().getDamageBonus().setBase(config.damage_bonus);
   getStats().getDamageReduction().setBase(config.damage_reduction);
   getStats().getCurrentHealth() = config.health;
+  getStats().setResourceRegen(config.resource_regen);
 }

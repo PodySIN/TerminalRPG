@@ -1,21 +1,21 @@
 #ifndef REWARD_HPP
 #define REWARD_HPP
 
-#include <memory>
 #include <string>
 #include <vector>
+#include <memory>
 #include "hero.hpp"
 
 namespace rpg {
 
   class Reward {
   public:
-    virtual ~Reward() = default;
     Reward(const std::string& description);
-    virtual void apply(Hero& hero) const = 0;
+    virtual ~Reward() = default;
     std::string getDescription() const;
+    virtual void apply(Hero& hero) const = 0;
 
-  private:
+  protected:
     std::string description_;
   };
 
@@ -129,11 +129,11 @@ namespace rpg {
   };
 
   class UnlockSkillReward : public Reward {
-  public:
-    UnlockSkillReward();
-    void apply(Hero& hero) const override;
+    bool include_ults_;
 
-    static bool hasLockedSkills(const Hero& hero);
+  public:
+    UnlockSkillReward(bool include_ults = true);
+    void apply(Hero& hero) const override;
   };
 
   class MultiSkillLevelReward : public Reward {
@@ -147,16 +147,19 @@ namespace rpg {
 
   class FullHealReward : public Reward {
   public:
-    FullHealReward();
+    FullHealReward(float pct);
     void apply(Hero& hero) const override;
+
+  private:
+    float percent_;
   };
 
   class RewardFactory {
   public:
-    static std::unique_ptr< Reward > createRandomCommonReward(int floor = 1);
-    static std::unique_ptr< Reward > createRandomRareReward(const Hero& hero, int floor = 1);
     static std::vector< std::unique_ptr< Reward > > generateCommonRewards(int floor);
     static std::vector< std::unique_ptr< Reward > > generateRareRewards(const Hero& hero, int floor);
+    static std::vector< std::unique_ptr< Reward > > generateEpicRewards(const Hero& hero, int floor);
+    static std::vector< std::unique_ptr< Reward > > generateLegendaryRewards(const Hero& hero, int floor);
   };
 
 }

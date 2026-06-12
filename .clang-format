@@ -1,8 +1,11 @@
 BasedOnStyle: LLVM
 IndentWidth: 2
-ColumnLimit: 80
+ColumnLimit: 120
+MaxEmptyLinesToKeep: 1
 UseTab: Never
 TabWidth: 2
+Language: Cpp
+DerivePointerAlignment: false
 PointerAlignment: Left
 
 ConstructorInitializerIndentWidth: 2
@@ -17,6 +20,9 @@ BraceWrapping:
   AfterStruct: false
   BeforeCatch: false
   BeforeElse: false
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+  SplitEmptyNamespace: false
 
 IndentCaseLabels: true
 NamespaceIndentation: All
@@ -25,9 +31,21 @@ AllowShortFunctionsOnASingleLine: None
 AllowShortEnumsOnASingleLine: false
 AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
+
 BreakConstructorInitializers: AfterColon
-ConstructorInitializerAllOnOneLineOrOnePerLine: true
+PackConstructorInitializers: Never
+ConstructorInitializerAllOnOneLineOrOnePerLine: false
+SpaceBeforeCtorInitializerColon: false
+
+AlwaysBreakTemplateDeclarations: Yes
+SpaceAfterTemplateKeyword: false
 SpacesInAngles: true
+
 AlignAfterOpenBracket: Align
 AlignConsecutiveAssignments: false
+FixNamespaceComments: false
+SortIncludes: false
 AlignConsecutiveDeclarations: false
+EmptyLineBeforeAccessModifier: Always
+RemoveEmptyLinesInUnwrappedLines: true
+SeparateDefinitionBlocks: Always

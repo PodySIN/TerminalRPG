@@ -27,8 +27,13 @@ bool rpg::DamageManager::handleAttack(float attack, rpg::Actor* attacker)
 float rpg::DamageManager::calculateInputDamage(float attack)
 {
   float damage = attack;
-  damage *= (1 - owner_->getStats().calculatePhysicalResistance());
-  damage *= (1 - owner_->getStats().getDamageReduction().getBase());
+  float phys_res = owner_->getStats().calculatePhysicalResistance();
+  float damage_reduction = owner_->getStats().getDamageReduction().getBase();
+  damage *= 1.0f - phys_res;
+  damage *= 1.0f - damage_reduction;
+  if (damage < 0) {
+    damage *= (-1);
+  }
   return damage;
 }
 
@@ -54,7 +59,11 @@ float rpg::DamageManager::calculateOutputDamage(rpg::AttackSkill* skill)
   if (rpg::Random::getFloat(0.0f, 1.0f) < owner_->getStats().getCritChance().getBase()) {
     damage *= owner_->getStats().getCritDamage().getBase();
   }
-  damage *= owner_->getStats().getDamageBonus().getBase();
+  float damage_bonus = owner_->getStats().getDamageBonus().getBase();
+  if (damage_bonus < 0) {
+    return 0.0f;
+  }
+  damage *= damage_bonus;
   return damage;
 }
 
@@ -63,6 +72,9 @@ void rpg::DamageManager::takeDamage(float damage)
   if (damage <= 0)
     return;
   auto& stats = owner_->getStats();
+  if (stats.isInvincible()) {
+    return;
+  }
   if (stats.getShield() > 0) {
     float shield_absorb = std::min(damage, stats.getShield());
     stats.setShield(stats.getShield() - shield_absorb);

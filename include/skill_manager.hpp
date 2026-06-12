@@ -18,10 +18,14 @@ namespace rpg {
     void unlockSkill(size_t index);
     bool isSkillLocked(size_t index) const;
     std::string getSkillName(size_t index) const;
-
+    float getSkillCost(size_t index) const;
+    std::string getSkillDescription(size_t index) const;
+    SkillTarget getSkillTargetType(size_t index) const;
     void useSkill(size_t id) const;
     void useSkill(size_t id, Actor* target) const;
     void useSkill(size_t id, const std::vector< Actor* >& targets) const;
+
+    size_t getSkillLevel(size_t index) const;
 
     void addLevelsToSkill(size_t id, size_t levels);
     size_t getSkillCount() const;

@@ -10,6 +10,27 @@ rpg::Enemy::Enemy(const rpg::ActorConfig& config):
 void rpg::Enemy::die()
 {
   std::cout << name_ << " has been defeated!\n";
+  getStats().setIsDead(true);
+}
+
+std::string rpg::Enemy::getName() const
+{
+  return name_;
+}
+
+void rpg::Enemy::setName(const std::string& name)
+{
+  name_ = name;
+}
+
+size_t rpg::Enemy::getStage() const
+{
+  return stage_;
+}
+
+void rpg::Enemy::setStage(size_t stage)
+{
+  stage_ = stage;
 }
 
 rpg::Goblin::Goblin(size_t stage):
@@ -26,6 +47,11 @@ void rpg::Goblin::setupSkills()
   getSkillManager().addSkill(std::move(attack));
 }
 
+std::string rpg::Goblin::getType() const
+{
+  return "Goblin";
+}
+
 rpg::Wolf::Wolf(size_t stage):
   rpg::Enemy(rpg::Presets::Wolf(stage))
 {
@@ -38,6 +64,11 @@ void rpg::Wolf::setupSkills()
 {
   auto attack = std::make_unique< rpg::BaseAttack >();
   getSkillManager().addSkill(std::move(attack));
+}
+
+std::string rpg::Wolf::getType() const
+{
+  return "Wolf";
 }
 
 rpg::Skeleton::Skeleton(size_t stage):
@@ -54,6 +85,11 @@ void rpg::Skeleton::setupSkills()
   getSkillManager().addSkill(std::move(attack));
 }
 
+std::string rpg::Skeleton::getType() const
+{
+  return "Skeleton";
+}
+
 rpg::Slime::Slime(size_t stage):
   rpg::Enemy(rpg::Presets::Slime(stage))
 {
@@ -66,6 +102,11 @@ void rpg::Slime::setupSkills()
 {
   auto attack = std::make_unique< rpg::BaseAttack >();
   getSkillManager().addSkill(std::move(attack));
+}
+
+std::string rpg::Slime::getType() const
+{
+  return "Slime";
 }
 
 rpg::Bat::Bat(size_t stage):
@@ -82,6 +123,11 @@ void rpg::Bat::setupSkills()
   getSkillManager().addSkill(std::move(attack));
 }
 
+std::string rpg::Bat::getType() const
+{
+  return "Bat";
+}
+
 rpg::Spider::Spider(size_t stage):
   rpg::Enemy(rpg::Presets::Spider(stage))
 {
@@ -96,6 +142,11 @@ void rpg::Spider::setupSkills()
   getSkillManager().addSkill(std::move(attack));
 }
 
+std::string rpg::Spider::getType() const
+{
+  return "Spider";
+}
+
 rpg::Zombie::Zombie(size_t stage):
   rpg::Enemy(rpg::Presets::Zombie(stage))
 {
@@ -108,6 +159,11 @@ void rpg::Zombie::setupSkills()
 {
   auto attack = std::make_unique< rpg::BaseAttack >();
   getSkillManager().addSkill(std::move(attack));
+}
+
+std::string rpg::Zombie::getType() const
+{
+  return "Zombie";
 }
 
 rpg::Cultist::Cultist(size_t stage):
@@ -126,6 +182,11 @@ void rpg::Cultist::setupSkills()
   getSkillManager().addSkill(std::move(curse));
 }
 
+std::string rpg::Cultist::getType() const
+{
+  return "Cultist";
+}
+
 rpg::Bandit::Bandit(size_t stage):
   rpg::Enemy(rpg::Presets::Bandit(stage))
 {
@@ -140,6 +201,11 @@ void rpg::Bandit::setupSkills()
   auto backstab = std::make_unique< rpg::Backstab >();
   getSkillManager().addSkill(std::move(attack));
   getSkillManager().addSkill(std::move(backstab));
+}
+
+std::string rpg::Bandit::getType() const
+{
+  return "Bandit";
 }
 
 rpg::Imp::Imp(size_t stage):
@@ -158,6 +224,11 @@ void rpg::Imp::setupSkills()
   getSkillManager().addSkill(std::move(fireball));
 }
 
+std::string rpg::Imp::getType() const
+{
+  return "Imp";
+}
+
 rpg::Harpy::Harpy(size_t stage):
   rpg::Enemy(rpg::Presets::Harpy(stage))
 {
@@ -174,6 +245,11 @@ void rpg::Harpy::setupSkills()
   getSkillManager().addSkill(std::move(evasion));
 }
 
+std::string rpg::Harpy::getType() const
+{
+  return "Harpy";
+}
+
 rpg::Mummy::Mummy(size_t stage):
   rpg::Enemy(rpg::Presets::Mummy(stage))
 {
@@ -188,6 +264,11 @@ void rpg::Mummy::setupSkills()
   auto curse = std::make_unique< rpg::Curse >();
   getSkillManager().addSkill(std::move(attack));
   getSkillManager().addSkill(std::move(curse));
+}
+
+std::string rpg::Mummy::getType() const
+{
+  return "Mummy";
 }
 
 rpg::OrcWarrior::OrcWarrior(size_t stage):
@@ -210,6 +291,11 @@ void rpg::OrcWarrior::setupSkills()
   getSkillManager().addSkill(std::move(shield));
 }
 
+std::string rpg::OrcWarrior::getType() const
+{
+  return "Orc Warrior";
+}
+
 rpg::DarkElf::DarkElf(size_t stage):
   rpg::Enemy(rpg::Presets::DarkElf(stage))
 {
@@ -228,6 +314,11 @@ void rpg::DarkElf::setupSkills()
   getSkillManager().addSkill(std::move(poison));
   getSkillManager().addSkill(std::move(shadow));
   getSkillManager().addSkill(std::move(backstab));
+}
+
+std::string rpg::DarkElf::getType() const
+{
+  return "Dark Elf";
 }
 
 rpg::StoneGolem::StoneGolem(size_t stage):
@@ -250,6 +341,11 @@ void rpg::StoneGolem::setupSkills()
   getSkillManager().addSkill(std::move(taunt));
 }
 
+std::string rpg::StoneGolem::getType() const
+{
+  return "Stone Golem";
+}
+
 rpg::FireElemental::FireElemental(size_t stage):
   rpg::Enemy(rpg::Presets::FireElemental(stage))
 {
@@ -266,6 +362,11 @@ void rpg::FireElemental::setupSkills()
   getSkillManager().addSkill(std::move(attack));
   getSkillManager().addSkill(std::move(fireball));
   getSkillManager().addSkill(std::move(meteor));
+}
+
+std::string rpg::FireElemental::getType() const
+{
+  return "Fire Elemental";
 }
 
 rpg::IceElemental::IceElemental(size_t stage):
@@ -286,6 +387,11 @@ void rpg::IceElemental::setupSkills()
   getSkillManager().addSkill(std::move(blizzard));
 }
 
+std::string rpg::IceElemental::getType() const
+{
+  return "Ice Elemental";
+}
+
 rpg::Thunderbird::Thunderbird(size_t stage):
   rpg::Enemy(rpg::Presets::Thunderbird(stage))
 {
@@ -302,6 +408,11 @@ void rpg::Thunderbird::setupSkills()
   getSkillManager().addSkill(std::move(attack));
   getSkillManager().addSkill(std::move(lightning));
   getSkillManager().addSkill(std::move(speed));
+}
+
+std::string rpg::Thunderbird::getType() const
+{
+  return "Thunderbird";
 }
 
 rpg::ShadowAssassin::ShadowAssassin(size_t stage):
@@ -324,6 +435,11 @@ void rpg::ShadowAssassin::setupSkills()
   getSkillManager().addSkill(std::move(assassinate));
 }
 
+std::string rpg::ShadowAssassin::getType() const
+{
+  return "Shadow Assassin";
+}
+
 rpg::AncientTreant::AncientTreant(size_t stage):
   rpg::Enemy(rpg::Presets::AncientTreant(stage))
 {
@@ -342,6 +458,11 @@ void rpg::AncientTreant::setupSkills()
   getSkillManager().addSkill(std::move(heal));
   getSkillManager().addSkill(std::move(protect));
   getSkillManager().addSkill(std::move(ultimate));
+}
+
+std::string rpg::AncientTreant::getType() const
+{
+  return "Ancient Treant";
 }
 
 rpg::TrollKing::TrollKing(size_t stage):
@@ -369,6 +490,11 @@ void rpg::TrollKing::setupSkills()
   getSkillManager().addSkill(std::move(ult2));
 }
 
+std::string rpg::TrollKing::getType() const
+{
+  return "Troll King";
+}
+
 rpg::Dragon::Dragon(size_t stage):
   rpg::Enemy(rpg::Presets::Dragon(stage))
 {
@@ -394,6 +520,11 @@ void rpg::Dragon::setupSkills()
   getSkillManager().addSkill(std::move(ult2));
 }
 
+std::string rpg::Dragon::getType() const
+{
+  return "Dragon";
+}
+
 rpg::Lich::Lich(size_t stage):
   rpg::Enemy(rpg::Presets::Lich(stage))
 {
@@ -417,4 +548,9 @@ void rpg::Lich::setupSkills()
   getSkillManager().addSkill(std::move(holy));
   getSkillManager().addSkill(std::move(ult1));
   getSkillManager().addSkill(std::move(ult2));
+}
+
+std::string rpg::Lich::getType() const
+{
+  return "Lich";
 }

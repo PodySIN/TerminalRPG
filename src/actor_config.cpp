@@ -5,12 +5,13 @@ rpg::ActorConfig rpg::Presets::Knight()
   rpg::ActorConfig config;
   config.health = 200.0f;
   config.resource = 100.0f;
+  config.resource_regen = 10.0f;
   config.damage = 25.0f;
   config.defense = 30.0f;
   config.speed = 80.0f;
   config.crit_chance = 0.05f;
   config.crit_damage = 1.5f;
-  config.damage_bonus = 0.0f;
+  config.damage_bonus = 1.0f;
   config.damage_reduction = 0.0f;
   config.actor_type = rpg::ActorType::Hero;
   config.hero_class = rpg::HeroClass::Knight;
@@ -22,12 +23,13 @@ rpg::ActorConfig rpg::Presets::Mage()
   rpg::ActorConfig config;
   config.health = 120.0f;
   config.resource = 200.0f;
+  config.resource_regen = 30.0f;
   config.damage = 28.0f;
   config.defense = 10.0f;
   config.speed = 110.0f;
   config.crit_chance = 0.10f;
   config.crit_damage = 1.5f;
-  config.damage_bonus = 0.0f;
+  config.damage_bonus = 1.0f;
   config.damage_reduction = 0.0f;
   config.actor_type = rpg::ActorType::Hero;
   config.hero_class = rpg::HeroClass::Mage;
@@ -39,12 +41,13 @@ rpg::ActorConfig rpg::Presets::Assassin()
   rpg::ActorConfig config;
   config.health = 140.0f;
   config.resource = 120.0f;
+  config.resource_regen = 10.0f;
   config.damage = 30.0f;
   config.defense = 15.0f;
   config.speed = 130.0f;
   config.crit_chance = 0.20f;
   config.crit_damage = 1.8f;
-  config.damage_bonus = 0.0f;
+  config.damage_bonus = 1.0f;
   config.damage_reduction = 0.0f;
   config.actor_type = rpg::ActorType::Hero;
   config.hero_class = rpg::HeroClass::Assasin;
@@ -56,12 +59,13 @@ rpg::ActorConfig rpg::Presets::Paladin()
   rpg::ActorConfig config;
   config.health = 220.0f;
   config.resource = 80.0f;
+  config.resource_regen = 8.0f;
   config.damage = 22.0f;
   config.defense = 35.0f;
   config.speed = 85.0f;
   config.crit_chance = 0.05f;
   config.crit_damage = 1.5f;
-  config.damage_bonus = 0.0f;
+  config.damage_bonus = 1.0f;
   config.damage_reduction = 0.10f;
   config.actor_type = rpg::ActorType::Hero;
   config.hero_class = rpg::HeroClass::Palladin;
@@ -73,12 +77,13 @@ rpg::ActorConfig rpg::Presets::Priest()
   rpg::ActorConfig config;
   config.health = 150.0f;
   config.resource = 160.0f;
+  config.resource_regen = 20.0f;
   config.damage = 15.0f;
   config.defense = 10.0f;
   config.speed = 90.0f;
   config.crit_chance = 0.05f;
   config.crit_damage = 1.5f;
-  config.damage_bonus = 0.0f;
+  config.damage_bonus = 1.0f;
   config.damage_reduction = 0.0f;
   config.actor_type = rpg::ActorType::Hero;
   config.hero_class = rpg::HeroClass::Priest;
@@ -90,12 +95,13 @@ rpg::ActorConfig rpg::Presets::Archer()
   rpg::ActorConfig config;
   config.health = 130.0f;
   config.resource = 100.0f;
+  config.resource_regen = 10.0f;
   config.damage = 24.0f;
   config.defense = 15.0f;
   config.speed = 120.0f;
   config.crit_chance = 0.15f;
   config.crit_damage = 1.6f;
-  config.damage_bonus = 0.0f;
+  config.damage_bonus = 1.0f;
   config.damage_reduction = 0.0f;
   config.actor_type = rpg::ActorType::Hero;
   config.hero_class = rpg::HeroClass::Archer;
@@ -112,7 +118,7 @@ rpg::ActorConfig rpg::Presets::Goblin(size_t stage)
   config.speed = 90.0f;
   config.crit_chance = 0.05f;
   config.crit_damage = 1.5f;
-  config.damage_bonus = 0.0f;
+  config.damage_bonus = 1.0f;
   config.damage_reduction = 0.0f;
   config.actor_type = rpg::ActorType::Monster;
   return config;
@@ -128,7 +134,7 @@ rpg::ActorConfig rpg::Presets::Wolf(size_t stage)
   config.speed = 110.0f;
   config.crit_chance = 0.08f;
   config.crit_damage = 1.5f;
-  config.damage_bonus = 0.0f;
+  config.damage_bonus = 1.0f;
   config.damage_reduction = 0.0f;
   config.actor_type = rpg::ActorType::Monster;
   return config;
@@ -144,7 +150,7 @@ rpg::ActorConfig rpg::Presets::Skeleton(size_t stage)
   config.speed = 95.0f;
   config.crit_chance = 0.05f;
   config.crit_damage = 1.5f;
-  config.damage_bonus = 0.0f;
+  config.damage_bonus = 1.0f;
   config.damage_reduction = 0.05f;
   config.actor_type = rpg::ActorType::Monster;
   return config;
@@ -160,7 +166,7 @@ rpg::ActorConfig rpg::Presets::Slime(size_t stage)
   config.speed = 70.0f;
   config.crit_chance = 0.03f;
   config.crit_damage = 1.5f;
-  config.damage_bonus = 0.0f;
+  config.damage_bonus = 1.0f;
   config.damage_reduction = 0.1f;
   config.actor_type = rpg::ActorType::Monster;
   return config;
@@ -176,7 +182,7 @@ rpg::ActorConfig rpg::Presets::Bat(size_t stage)
   config.speed = 120.0f;
   config.crit_chance = 0.1f;
   config.crit_damage = 1.5f;
-  config.damage_bonus = 0.0f;
+  config.damage_bonus = 1.0f;
   config.damage_reduction = 0.0f;
   config.actor_type = rpg::ActorType::Monster;
   return config;
@@ -192,7 +198,7 @@ rpg::ActorConfig rpg::Presets::Spider(size_t stage)
   config.speed = 100.0f;
   config.crit_chance = 0.05f;
   config.crit_damage = 1.5f;
-  config.damage_bonus = 0.0f;
+  config.damage_bonus = 1.0f;
   config.damage_reduction = 0.0f;
   config.actor_type = rpg::ActorType::Monster;
   return config;
@@ -208,7 +214,7 @@ rpg::ActorConfig rpg::Presets::Zombie(size_t stage)
   config.speed = 75.0f;
   config.crit_chance = 0.03f;
   config.crit_damage = 1.5f;
-  config.damage_bonus = 0.0f;
+  config.damage_bonus = 1.0f;
   config.damage_reduction = 0.08f;
   config.actor_type = rpg::ActorType::Monster;
   return config;
@@ -224,7 +230,7 @@ rpg::ActorConfig rpg::Presets::Cultist(size_t stage)
   config.speed = 95.0f;
   config.crit_chance = 0.08f;
   config.crit_damage = 1.5f;
-  config.damage_bonus = 0.0f;
+  config.damage_bonus = 1.0f;
   config.damage_reduction = 0.0f;
   config.actor_type = rpg::ActorType::Monster;
   return config;
@@ -240,7 +246,7 @@ rpg::ActorConfig rpg::Presets::Bandit(size_t stage)
   config.speed = 105.0f;
   config.crit_chance = 0.1f;
   config.crit_damage = 1.5f;
-  config.damage_bonus = 0.0f;
+  config.damage_bonus = 1.0f;
   config.damage_reduction = 0.0f;
   config.actor_type = rpg::ActorType::Monster;
   return config;
@@ -256,7 +262,7 @@ rpg::ActorConfig rpg::Presets::Imp(size_t stage)
   config.speed = 115.0f;
   config.crit_chance = 0.12f;
   config.crit_damage = 1.5f;
-  config.damage_bonus = 0.0f;
+  config.damage_bonus = 1.0f;
   config.damage_reduction = 0.0f;
   config.actor_type = rpg::ActorType::Monster;
   return config;
@@ -272,7 +278,7 @@ rpg::ActorConfig rpg::Presets::Harpy(size_t stage)
   config.speed = 125.0f;
   config.crit_chance = 0.08f;
   config.crit_damage = 1.5f;
-  config.damage_bonus = 0.0f;
+  config.damage_bonus = 1.0f;
   config.damage_reduction = 0.0f;
   config.actor_type = rpg::ActorType::Monster;
   return config;
@@ -288,7 +294,7 @@ rpg::ActorConfig rpg::Presets::Mummy(size_t stage)
   config.speed = 80.0f;
   config.crit_chance = 0.05f;
   config.crit_damage = 1.5f;
-  config.damage_bonus = 0.0f;
+  config.damage_bonus = 1.0f;
   config.damage_reduction = 0.05f;
   config.actor_type = rpg::ActorType::Monster;
   return config;
@@ -304,7 +310,7 @@ rpg::ActorConfig rpg::Presets::OrcWarrior(size_t stage)
   config.speed = 85.0f;
   config.crit_chance = 0.08f;
   config.crit_damage = 1.5f;
-  config.damage_bonus = 0.0f;
+  config.damage_bonus = 1.0f;
   config.damage_reduction = 0.05f;
   config.actor_type = rpg::ActorType::Monster;
   return config;
@@ -320,7 +326,7 @@ rpg::ActorConfig rpg::Presets::DarkElf(size_t stage)
   config.speed = 110.0f;
   config.crit_chance = 0.15f;
   config.crit_damage = 1.8f;
-  config.damage_bonus = 0.0f;
+  config.damage_bonus = 1.0f;
   config.damage_reduction = 0.0f;
   config.actor_type = rpg::ActorType::Monster;
   return config;
@@ -336,7 +342,7 @@ rpg::ActorConfig rpg::Presets::StoneGolem(size_t stage)
   config.speed = 60.0f;
   config.crit_chance = 0.05f;
   config.crit_damage = 1.5f;
-  config.damage_bonus = 0.0f;
+  config.damage_bonus = 1.0f;
   config.damage_reduction = 0.15f;
   config.actor_type = rpg::ActorType::Monster;
   return config;
@@ -352,7 +358,7 @@ rpg::ActorConfig rpg::Presets::FireElemental(size_t stage)
   config.speed = 100.0f;
   config.crit_chance = 0.1f;
   config.crit_damage = 1.5f;
-  config.damage_bonus = 0.0f;
+  config.damage_bonus = 1.0f;
   config.damage_reduction = 0.0f;
   config.actor_type = rpg::ActorType::Monster;
   return config;
@@ -368,7 +374,7 @@ rpg::ActorConfig rpg::Presets::IceElemental(size_t stage)
   config.speed = 90.0f;
   config.crit_chance = 0.08f;
   config.crit_damage = 1.5f;
-  config.damage_bonus = 0.0f;
+  config.damage_bonus = 1.0f;
   config.damage_reduction = 0.05f;
   config.actor_type = rpg::ActorType::Monster;
   return config;
@@ -384,7 +390,7 @@ rpg::ActorConfig rpg::Presets::Thunderbird(size_t stage)
   config.speed = 130.0f;
   config.crit_chance = 0.12f;
   config.crit_damage = 1.6f;
-  config.damage_bonus = 0.0f;
+  config.damage_bonus = 1.0f;
   config.damage_reduction = 0.0f;
   config.actor_type = rpg::ActorType::Monster;
   return config;
@@ -400,7 +406,7 @@ rpg::ActorConfig rpg::Presets::ShadowAssassin(size_t stage)
   config.speed = 125.0f;
   config.crit_chance = 0.2f;
   config.crit_damage = 2.0f;
-  config.damage_bonus = 0.0f;
+  config.damage_bonus = 1.0f;
   config.damage_reduction = 0.0f;
   config.actor_type = rpg::ActorType::Monster;
   return config;
@@ -416,7 +422,7 @@ rpg::ActorConfig rpg::Presets::AncientTreant(size_t stage)
   config.speed = 65.0f;
   config.crit_chance = 0.05f;
   config.crit_damage = 1.5f;
-  config.damage_bonus = 0.0f;
+  config.damage_bonus = 1.0f;
   config.damage_reduction = 0.1f;
   config.actor_type = rpg::ActorType::Monster;
   return config;
@@ -432,7 +438,7 @@ rpg::ActorConfig rpg::Presets::TrollKing(size_t stage)
   config.speed = 70.0f;
   config.crit_chance = 0.08f;
   config.crit_damage = 1.5f;
-  config.damage_bonus = 0.0f;
+  config.damage_bonus = 1.0f;
   config.damage_reduction = 0.1f;
   config.actor_type = rpg::ActorType::Monster;
   return config;
@@ -448,7 +454,7 @@ rpg::ActorConfig rpg::Presets::Dragon(size_t stage)
   config.speed = 85.0f;
   config.crit_chance = 0.1f;
   config.crit_damage = 1.6f;
-  config.damage_bonus = 0.0f;
+  config.damage_bonus = 1.0f;
   config.damage_reduction = 0.2f;
   config.actor_type = rpg::ActorType::Monster;
   return config;
@@ -464,7 +470,7 @@ rpg::ActorConfig rpg::Presets::Lich(size_t stage)
   config.speed = 90.0f;
   config.crit_chance = 0.1f;
   config.crit_damage = 1.6f;
-  config.damage_bonus = 0.2f;
+  config.damage_bonus = 1.2f;
   config.damage_reduction = 0.1f;
   config.actor_type = rpg::ActorType::Monster;
   return config;

@@ -22,10 +22,27 @@ namespace rpg {
     void addSkillLevel(size_t value);
     size_t getSkillLevel() const;
 
+    virtual float getResourceCost() const
+    {
+      return resource_cost_;
+    }
+
+    void setResourceCost(float cost)
+    {
+      resource_cost_ = cost;
+    }
+
+    virtual SkillTarget getTargetType() const
+    {
+      return SkillTarget::Enemy;
+    }
+
   protected:
     std::string skill_name_;
     std::string description_;
     size_t skill_level_ = 1;
+    float resource_cost_ = 0.0f;
+    float level_scale_ = 0.01f;
 
     virtual void doProcessSkill(Actor* owner, Actor* target) = 0;
   };
@@ -49,6 +66,11 @@ namespace rpg {
     BaseAttack();
     BaseAttack(float damage_multiplier, float flat_damage, ScaleType scale_type);
 
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Enemy;
+    }
+
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
   };
@@ -56,6 +78,11 @@ namespace rpg {
   class KnightSlash : public AttackSkill {
   public:
     KnightSlash();
+
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Enemy;
+    }
 
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
@@ -65,6 +92,11 @@ namespace rpg {
   public:
     ShieldBash();
 
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Enemy;
+    }
+
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
   };
@@ -72,6 +104,11 @@ namespace rpg {
   class Taunt : public Skill {
   public:
     Taunt();
+
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Enemy;
+    }
 
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
@@ -81,6 +118,11 @@ namespace rpg {
   public:
     KnightProtection();
 
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Ally;
+    }
+
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
   };
@@ -88,6 +130,11 @@ namespace rpg {
   class KnightUltimate1 : public AttackSkill {
   public:
     KnightUltimate1();
+
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Enemy;
+    }
 
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
@@ -97,6 +144,11 @@ namespace rpg {
   public:
     KnightUltimate2();
 
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Self;
+    }
+
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
   };
@@ -104,6 +156,11 @@ namespace rpg {
   class Fireball : public AttackSkill {
   public:
     Fireball();
+
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Enemy;
+    }
 
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
@@ -113,6 +170,11 @@ namespace rpg {
   public:
     IceShard();
 
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Enemy;
+    }
+
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
   };
@@ -120,6 +182,11 @@ namespace rpg {
   class LightningStrike : public AttackSkill {
   public:
     LightningStrike();
+
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Enemy;
+    }
 
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
@@ -129,6 +196,11 @@ namespace rpg {
   public:
     ManaShield();
     ManaShield(float shield_amount, size_t duration);
+
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Self;
+    }
 
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
@@ -140,6 +212,11 @@ namespace rpg {
   public:
     MageUltimate1();
 
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::AllEnemies;
+    }
+
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
   };
@@ -147,6 +224,11 @@ namespace rpg {
   class MageUltimate2 : public Skill {
   public:
     MageUltimate2();
+
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Ally;
+    }
 
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
@@ -156,6 +238,11 @@ namespace rpg {
   public:
     Backstab();
 
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Enemy;
+    }
+
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
   };
@@ -163,6 +250,11 @@ namespace rpg {
   class PoisonDagger : public AttackSkill {
   public:
     PoisonDagger();
+
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Enemy;
+    }
 
   private:
     std::unique_ptr< Effect > effect_;
@@ -173,6 +265,11 @@ namespace rpg {
   public:
     ShadowStep();
 
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Self;
+    }
+
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
   };
@@ -180,6 +277,11 @@ namespace rpg {
   class SpeedBoost : public Skill {
   public:
     SpeedBoost();
+
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Self;
+    }
 
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
@@ -189,6 +291,11 @@ namespace rpg {
   public:
     AssassinUltimate1();
 
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Enemy;
+    }
+
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
   };
@@ -196,6 +303,11 @@ namespace rpg {
   class AssassinUltimate2 : public AttackSkill {
   public:
     AssassinUltimate2();
+
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Enemy;
+    }
 
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
@@ -205,6 +317,11 @@ namespace rpg {
   public:
     HolyStrike();
 
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Enemy;
+    }
+
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
   };
@@ -212,6 +329,11 @@ namespace rpg {
   class DivineShield : public Skill {
   public:
     DivineShield();
+
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Ally;
+    }
 
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
@@ -221,6 +343,11 @@ namespace rpg {
   public:
     HolyLight();
 
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Ally;
+    }
+
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
   };
@@ -228,6 +355,11 @@ namespace rpg {
   class AuraOfProtection : public Skill {
   public:
     AuraOfProtection();
+
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::AllAllies;
+    }
 
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
@@ -237,6 +369,11 @@ namespace rpg {
   public:
     PaladinUltimate1();
 
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::AllEnemies;
+    }
+
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
   };
@@ -244,6 +381,11 @@ namespace rpg {
   class PaladinUltimate2 : public AttackSkill {
   public:
     PaladinUltimate2();
+
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Enemy;
+    }
 
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
@@ -253,6 +395,11 @@ namespace rpg {
   public:
     HolySmite();
 
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Enemy;
+    }
+
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
   };
@@ -260,6 +407,11 @@ namespace rpg {
   class Heal : public Skill {
   public:
     Heal();
+
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Ally;
+    }
 
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
@@ -269,6 +421,11 @@ namespace rpg {
   public:
     Purify();
 
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Ally;
+    }
+
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
   };
@@ -276,6 +433,11 @@ namespace rpg {
   class SaintUltimate1 : public Skill {
   public:
     SaintUltimate1();
+
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Ally;
+    }
 
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
@@ -285,6 +447,11 @@ namespace rpg {
   public:
     SaintUltimate2();
 
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::AllAllies;
+    }
+
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
   };
@@ -292,6 +459,11 @@ namespace rpg {
   class Smite : public AttackSkill {
   public:
     Smite();
+
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Enemy;
+    }
 
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
@@ -301,6 +473,11 @@ namespace rpg {
   public:
     HealPrayer();
 
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Ally;
+    }
+
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
   };
@@ -308,6 +485,11 @@ namespace rpg {
   class ShieldOfFaith : public Skill {
   public:
     ShieldOfFaith();
+
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Ally;
+    }
 
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
@@ -317,6 +499,11 @@ namespace rpg {
   public:
     Renew();
 
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Ally;
+    }
+
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
   };
@@ -324,6 +511,11 @@ namespace rpg {
   class PriestUltimate1 : public Skill {
   public:
     PriestUltimate1();
+
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Ally;
+    }
 
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
@@ -333,6 +525,11 @@ namespace rpg {
   public:
     PriestUltimate2();
 
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::AllAllies;
+    }
+
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
   };
@@ -340,6 +537,11 @@ namespace rpg {
   class QuickShot : public AttackSkill {
   public:
     QuickShot();
+
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Enemy;
+    }
 
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
@@ -349,6 +551,11 @@ namespace rpg {
   public:
     AimedShot();
 
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Enemy;
+    }
+
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
   };
@@ -356,6 +563,11 @@ namespace rpg {
   class PiercingArrow : public AttackSkill {
   public:
     PiercingArrow();
+
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Enemy;
+    }
 
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
@@ -365,6 +577,11 @@ namespace rpg {
   public:
     HawkEye();
 
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Self;
+    }
+
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
   };
@@ -372,6 +589,11 @@ namespace rpg {
   class ArcherUltimate1 : public AttackSkill {
   public:
     ArcherUltimate1();
+
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::AllEnemies;
+    }
 
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
@@ -381,6 +603,11 @@ namespace rpg {
   public:
     ArcherUltimate2();
 
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Enemy;
+    }
+
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
   };
@@ -388,6 +615,11 @@ namespace rpg {
   class DemonMark : public Skill {
   public:
     DemonMark();
+
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Enemy;
+    }
 
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;
@@ -397,6 +629,11 @@ namespace rpg {
   public:
     Curse();
     Curse(float damage_multiplier, int duration);
+
+    SkillTarget getTargetType() const override
+    {
+      return SkillTarget::Enemy;
+    }
 
   private:
     void doProcessSkill(Actor* owner, Actor* target) override;

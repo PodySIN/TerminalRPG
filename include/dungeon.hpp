@@ -16,10 +16,6 @@ namespace rpg {
     std::string description;
     std::vector< std::unique_ptr< Enemy > > monsters;
 
-    enum class RewardQuality {
-      Common,
-      Rare
-    };
     RewardQuality reward_quality;
 
     DungeonRoom();
@@ -80,8 +76,8 @@ namespace rpg {
     void spawnMonster(size_t floor_index, size_t room_index, const std::string& type, size_t level);
     void removeMonster(size_t floor_index, size_t room_index, size_t monster_index);
 
-    void setRewardQuality(size_t floor_index, size_t room_index, DungeonRoom::RewardQuality q);
-    DungeonRoom::RewardQuality rewardQuality(size_t floor_index, size_t room_index) const;
+    void setRewardQuality(size_t floor_index, size_t room_index, RewardQuality q);
+    RewardQuality rewardQuality(size_t floor_index, size_t room_index) const;
     std::vector< std::unique_ptr< Reward > > generateRewards(Hero& hero) const;
 
     void start();
