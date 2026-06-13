@@ -320,6 +320,10 @@ rpg::TauntEffect::TauntEffect(size_t duration, Actor* taunter):
   taunter_(taunter)
 {}
 
+rpg::TauntEffect::TauntEffect():
+  rpg::TauntEffect(2)
+{}
+
 bool rpg::TauntEffect::isStackable() const
 {
   return false;
