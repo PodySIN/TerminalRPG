@@ -162,6 +162,21 @@ namespace rpg {
     static std::vector< std::unique_ptr< Reward > > generateLegendaryRewards(const Hero& hero, int floor);
   };
 
+  class PercentResourceReward : public Reward {
+    float percent_;
+
+  public:
+    PercentResourceReward(float percent);
+    void apply(Hero& hero) const override;
+  };
+
+  class RegenReward : public Reward {
+    float amount_;
+
+  public:
+    RegenReward(float amount);
+    void apply(Hero& hero) const override;
+  };
 }
 
 #endif

@@ -24,7 +24,7 @@ void rpg::HealthReward::apply(Hero& hero) const
 }
 
 rpg::ResourceReward::ResourceReward(float amount):
-  Reward("+" + std::to_string((int)amount) + " Resource"),
+  Reward("+" + std::to_string((int)amount) + " MP"),
   amount_(amount)
 {}
 
@@ -142,6 +142,30 @@ void rpg::PercentSpeedReward::apply(Hero& hero) const
   hero.getStats().getSpeed().addMultiply(percent_ / 100.0f);
 }
 
+rpg::PercentResourceReward::PercentResourceReward(float percent):
+  Reward("+" + std::to_string((int)percent) + "% Max MP"),
+  percent_(percent)
+{}
+
+void rpg::PercentResourceReward::apply(Hero& hero) const
+{
+  float old = hero.getStats().getResource().getTotal();
+  hero.getStats().getResource().addMultiply(percent_ / 100.0f);
+  float inc = hero.getStats().getResource().getTotal() - old;
+  hero.getStats().getCurrentResource() += inc;
+}
+
+rpg::RegenReward::RegenReward(float amount):
+  Reward("+" + std::to_string((int)amount) + " MP Regen"),
+  amount_(amount)
+{}
+
+void rpg::RegenReward::apply(Hero& hero) const
+{
+  float current = hero.getStats().getResourceRegen();
+  hero.getStats().setResourceRegen(current + amount_);
+}
+
 rpg::UnlockSkillReward::UnlockSkillReward(bool include_ults):
   Reward("Unlock new skill"),
   include_ults_(include_ults)
@@ -192,14 +216,34 @@ void rpg::FullHealReward::apply(Hero& hero) const
   hero.getDamageManager().heal(hero.getStats().getHealth().getTotal() * percent_);
 }
 
+// ==================== GENERATORS ====================
+
 std::vector< std::unique_ptr< rpg::Reward > > rpg::RewardFactory::generateCommonRewards(int floor)
 {
   std::vector< std::unique_ptr< Reward > > rewards;
   float b = 1.0f + (floor - 1) * 0.15f;
-  rewards.push_back(std::make_unique< HealthReward >(20.0f * b));
-  rewards.push_back(std::make_unique< DamageReward >(8.0f * b));
-  rewards.push_back(std::make_unique< DefenseReward >(6.0f * b));
-  rewards.push_back(std::make_unique< SpeedReward >(5.0f * b));
+
+  std::vector< int > types = {0, 1, 2, 3};
+  int count = Random::getInt(3, 4);
+  for (int i = 0; i < count && !types.empty(); i++) {
+    int idx = Random::getInt(0, types.size() - 1);
+    int type = types[idx];
+    types.erase(types.begin() + idx);
+    switch (type) {
+      case 0:
+        rewards.push_back(std::make_unique< HealthReward >(20.0f * b));
+        break;
+      case 1:
+        rewards.push_back(std::make_unique< DamageReward >(8.0f * b));
+        break;
+      case 2:
+        rewards.push_back(std::make_unique< DefenseReward >(6.0f * b));
+        break;
+      case 3:
+        rewards.push_back(std::make_unique< SpeedReward >(5.0f * b));
+        break;
+    }
+  }
   return rewards;
 }
 
@@ -207,11 +251,43 @@ std::vector< std::unique_ptr< rpg::Reward > > rpg::RewardFactory::generateRareRe
 {
   std::vector< std::unique_ptr< Reward > > rewards;
   float b = 1.0f + (floor - 1) * 0.2f;
-  rewards.push_back(std::make_unique< HealthReward >(40.0f * b));
-  rewards.push_back(std::make_unique< DamageReward >(15.0f * b));
-  rewards.push_back(std::make_unique< PercentHealthReward >(10.0f));
-  rewards.push_back(std::make_unique< PercentDamageReward >(8.0f));
-  rewards.push_back(std::make_unique< FullHealReward >(0.25f));
+
+  std::vector< int > types = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+  int count = Random::getInt(4, 5);
+  for (int i = 0; i < count && !types.empty(); i++) {
+    int idx = Random::getInt(0, types.size() - 1);
+    int type = types[idx];
+    types.erase(types.begin() + idx);
+    switch (type) {
+      case 0:
+        rewards.push_back(std::make_unique< HealthReward >(40.0f * b));
+        break;
+      case 1:
+        rewards.push_back(std::make_unique< DamageReward >(15.0f * b));
+        break;
+      case 2:
+        rewards.push_back(std::make_unique< DefenseReward >(12.0f * b));
+        break;
+      case 3:
+        rewards.push_back(std::make_unique< SpeedReward >(10.0f * b));
+        break;
+      case 4:
+        rewards.push_back(std::make_unique< PercentHealthReward >(10.0f));
+        break;
+      case 5:
+        rewards.push_back(std::make_unique< PercentDamageReward >(8.0f));
+        break;
+      case 6:
+        rewards.push_back(std::make_unique< FullHealReward >(0.25f));
+        break;
+      case 7:
+        rewards.push_back(std::make_unique< CritChanceReward >(0.03f));
+        break;
+      case 8:
+        rewards.push_back(std::make_unique< ResourceReward >(15.0f * b));
+        break;
+    }
+  }
   return rewards;
 }
 
@@ -235,11 +311,42 @@ std::vector< std::unique_ptr< rpg::Reward > > rpg::RewardFactory::generateEpicRe
   else
     rewards.push_back(std::make_unique< MultiSkillLevelReward >(3));
 
-  rewards.push_back(std::make_unique< PercentHealthReward >(20.0f));
-  rewards.push_back(std::make_unique< PercentDamageReward >(15.0f));
-  rewards.push_back(std::make_unique< FullHealReward >(0.5f));
-  rewards.push_back(std::make_unique< CritChanceReward >(0.05f));
-  rewards.push_back(std::make_unique< MultiSkillLevelReward >(2));
+  std::vector< int > types = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+  int count = Random::getInt(3, 4);
+  for (int i = 0; i < count && !types.empty(); i++) {
+    int idx = Random::getInt(0, types.size() - 1);
+    int type = types[idx];
+    types.erase(types.begin() + idx);
+    switch (type) {
+      case 0:
+        rewards.push_back(std::make_unique< PercentHealthReward >(20.0f));
+        break;
+      case 1:
+        rewards.push_back(std::make_unique< PercentDamageReward >(15.0f));
+        break;
+      case 2:
+        rewards.push_back(std::make_unique< FullHealReward >(0.5f));
+        break;
+      case 3:
+        rewards.push_back(std::make_unique< CritChanceReward >(0.05f));
+        break;
+      case 4:
+        rewards.push_back(std::make_unique< CritDamageReward >(0.15f));
+        break;
+      case 5:
+        rewards.push_back(std::make_unique< PercentDefenseReward >(12.0f));
+        break;
+      case 6:
+        rewards.push_back(std::make_unique< PercentSpeedReward >(10.0f));
+        break;
+      case 7:
+        rewards.push_back(std::make_unique< MultiSkillLevelReward >(2));
+        break;
+      case 8:
+        rewards.push_back(std::make_unique< RegenReward >(5.0f));
+        break;
+    }
+  }
   return rewards;
 }
 
@@ -258,16 +365,52 @@ std::vector< std::unique_ptr< rpg::Reward > > rpg::RewardFactory::generateLegend
 
   if (found_locked)
     rewards.push_back(std::make_unique< UnlockSkillReward >(true));
+  else {
+    size_t ult = hero.getSkillManager().getSkillCount() - 1;
+    if (!hero.getSkillManager().isSkillLocked(ult))
+      rewards.push_back(std::make_unique< SkillLevelReward >(ult, 3));
+    else
+      rewards.push_back(std::make_unique< MultiSkillLevelReward >(3));
+  }
 
-  size_t ult = hero.getSkillManager().getSkillCount() - 1;
-  if (!hero.getSkillManager().isSkillLocked(ult))
-    rewards.push_back(std::make_unique< SkillLevelReward >(ult, 3));
-
-  rewards.push_back(std::make_unique< PercentHealthReward >(35.0f));
-  rewards.push_back(std::make_unique< PercentDamageReward >(25.0f));
-  rewards.push_back(std::make_unique< FullHealReward >(1.0f));
-  rewards.push_back(std::make_unique< CritDamageReward >(0.3f));
-  rewards.push_back(std::make_unique< PercentDefenseReward >(20.0f));
-  rewards.push_back(std::make_unique< PercentSpeedReward >(15.0f));
+  std::vector< int > types = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+  int count = Random::getInt(4, 5);
+  for (int i = 0; i < count && !types.empty(); i++) {
+    int idx = Random::getInt(0, types.size() - 1);
+    int type = types[idx];
+    types.erase(types.begin() + idx);
+    switch (type) {
+      case 0:
+        rewards.push_back(std::make_unique< PercentHealthReward >(35.0f));
+        break;
+      case 1:
+        rewards.push_back(std::make_unique< PercentDamageReward >(25.0f));
+        break;
+      case 2:
+        rewards.push_back(std::make_unique< FullHealReward >(1.0f));
+        break;
+      case 3:
+        rewards.push_back(std::make_unique< CritDamageReward >(0.3f));
+        break;
+      case 4:
+        rewards.push_back(std::make_unique< PercentDefenseReward >(20.0f));
+        break;
+      case 5:
+        rewards.push_back(std::make_unique< PercentSpeedReward >(15.0f));
+        break;
+      case 6:
+        rewards.push_back(std::make_unique< CritChanceReward >(0.08f));
+        break;
+      case 7:
+        rewards.push_back(std::make_unique< MultiSkillLevelReward >(4));
+        break;
+      case 8:
+        rewards.push_back(std::make_unique< PercentResourceReward >(25.0f));
+        break;
+      case 9:
+        rewards.push_back(std::make_unique< RegenReward >(10.0f));
+        break;
+    }
+  }
   return rewards;
 }

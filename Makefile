@@ -1,6 +1,5 @@
 CXX = clang++
-CXXFLAGS = -std=c++14 -Wall -Wextra -g -fsanitize=address
-LDFLAGS = -fsanitize=address
+CXXFLAGS = -std=c++14 -Wall -Wextra -g
 INCLUDES = -Iinclude
 SRC_DIR = src
 BUILD_DIR = build
@@ -15,7 +14,7 @@ $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
 $(TARGET): $(OBJECTS)
-	$(CXX) $(LDFLAGS) $(OBJECTS) -o $@
+	$(CXX) $(OBJECTS) -o $@
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@

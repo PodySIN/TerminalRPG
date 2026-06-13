@@ -1,7 +1,7 @@
 #include "dungeon_admin.hpp"
 #include <iostream>
 #include <cstdio>
-#include "enemy_factory.hpp"
+#include "random.hpp"
 
 rpg::Dungeon* rpg::DungeonAdmin::activeDungeon()
 {
@@ -34,23 +34,72 @@ bool rpg::DungeonAdmin::createDungeon(const std::string& name, size_t floors)
 bool rpg::DungeonAdmin::generateDungeon(const std::string& name, size_t floors)
 {
   auto dungeon = std::make_unique< rpg::Dungeon >(name);
-  auto types = rpg::getAvailableEnemyTypes();
+
+  std::vector< std::string > common = {"Goblin", "Wolf", "Skeleton", "Slime", "Bat", "Spider", "Zombie"};
+  std::vector< std::string > medium = {"Cultist", "Bandit", "Imp", "Harpy", "Mummy"};
+  std::vector< std::string > elite = {"Orc Warrior",   "Dark Elf",    "Stone Golem",     "Fire Elemental",
+                                      "Ice Elemental", "Thunderbird", "Shadow Assassin", "Ancient Treant"};
+  std::vector< std::string > boss = {"Troll King", "Dragon", "Lich"};
 
   for (size_t i = 0; i < floors; i++) {
     dungeon->addFloor();
-    for (size_t j = 0; j < 3; j++) {
+    int paths = rpg::Random::getInt(2, 3);
+    for (int j = 0; j < paths; j++) {
       dungeon->addRoom(i, "Path " + std::to_string(j + 1));
-      size_t monsterCount = (i + j) % 3 + 1;
-      for (size_t k = 0; k < monsterCount; k++) {
-        size_t typeIdx = (i * 3 + j + k) % types.size();
+
+      int monster_count = rpg::Random::getInt(1, 3);
+      bool has_elite = false;
+
+      for (int k = 0; k < monster_count; k++) {
+        std::string type;
         size_t level = i + 1;
-        dungeon->spawnMonster(i, j, types[typeIdx], level);
+
+        if (i == floors - 1 && k == 0) {
+          type = boss[rpg::Random::getInt(0, boss.size() - 1)];
+          level = i + 2;
+        } else if (i >= floors - 3) {
+          if (rpg::Random::getFloat(0, 1) < 0.4f) {
+            type = elite[rpg::Random::getInt(0, elite.size() - 1)];
+            has_elite = true;
+          } else {
+            type = medium[rpg::Random::getInt(0, medium.size() - 1)];
+          }
+        } else if (i >= floors / 2) {
+          if (rpg::Random::getFloat(0, 1) < 0.3f) {
+            type = elite[rpg::Random::getInt(0, elite.size() - 1)];
+            has_elite = true;
+          } else if (rpg::Random::getFloat(0, 1) < 0.5f) {
+            type = medium[rpg::Random::getInt(0, medium.size() - 1)];
+          } else {
+            type = common[rpg::Random::getInt(0, common.size() - 1)];
+          }
+        } else {
+          if (rpg::Random::getFloat(0, 1) < 0.2f) {
+            type = medium[rpg::Random::getInt(0, medium.size() - 1)];
+          } else {
+            type = common[rpg::Random::getInt(0, common.size() - 1)];
+          }
+        }
+
+        dungeon->spawnMonster(i, j, type, level);
       }
-      dungeon->setRewardQuality(i, j,
-                                ((i + 1) % 4 == 0)   ? rpg::RewardQuality::Legendary
-                                : ((i + 1) % 3 == 0) ? rpg::RewardQuality::Epic
-                                : ((i + 1) % 2 == 0) ? rpg::RewardQuality::Rare
-                                                     : rpg::RewardQuality::Common);
+
+      rpg::RewardQuality rq;
+      if (i == floors - 1) {
+        rq = rpg::RewardQuality::Legendary;
+      } else if (i >= floors - 3) {
+        rq = rpg::RewardQuality::Epic;
+      } else if (has_elite) {
+        rq = rpg::RewardQuality::Rare;
+      } else if (monster_count >= 3) {
+        rq = rpg::RewardQuality::Rare;
+      } else if (monster_count >= 2) {
+        rq = rpg::RewardQuality::Rare;
+      } else {
+        rq = rpg::RewardQuality::Common;
+      }
+
+      dungeon->setRewardQuality(i, j, rq);
     }
   }
 
