@@ -94,9 +94,8 @@ void rpg::Game::adminLoop()
         return;
     } else if (cmd == "modify-dungeon") {
       rpg::adm::modifyMode(std::cin, std::cout);
-      if (rpg::adm::isModifyActive()) {
+      if (rpg::adm::isModifyActive())
         modifyLoop();
-      }
     } else {
       std::cout << "<INVALID COMMAND>\n";
       auto toignore = std::numeric_limits< std::streamsize >::max();
@@ -121,6 +120,10 @@ void rpg::Game::modifyLoop()
   cmds["show-monsters"] = rpg::adm::showMonsterTypes;
   cmds["show-dungeon"] = rpg::adm::dungeonShowActive;
   cmds["show-commands"] = rpg::adm::showModifyCommands;
+  cmds["show-dungeons"] = [](std::istream& in, std::ostream& out) {
+    rpg::HeroAccount dummy;
+    rpg::mmc::showDungeons(in, out, dummy);
+  };
   cmds["exit"] = [](std::istream&, std::ostream&) { std::exit(0); };
 
   std::string cmd;
@@ -154,6 +157,10 @@ void rpg::Game::processGame()
 
   dungeon.start();
 
+  for (size_t i = 1; i < account_.current_dungeon_floor; i++) {
+    dungeon.nextFloor();
+  }
+
   while (!dungeon.isCompleted()) {
     auto* floor = dungeon.currentFloor();
     if (!floor)
@@ -167,9 +174,25 @@ void rpg::Game::processGame()
     std::cin >> input;
 
     if (input == "exit-to-menu") {
+      account_.loadFromHeroes();
       rpg::SaveManager::save(account_);
       std::cout << "Returning to menu...\n";
       return;
+    }
+    if (input == "exit") {
+      std::cout << "Exiting game...\n";
+      std::exit(0);
+    }
+    if (input == "hero-stats") {
+      rpg::pg::showHeroStats(std::cin, std::cout, account_);
+      continue;
+    }
+    if (input == "show-commands") {
+      std::cout << "  <path_number>  - Choose path\n";
+      std::cout << "  hero-stats     - Show hero stats\n";
+      std::cout << "  exit-to-menu   - Exit to menu\n";
+      std::cout << "  exit           - Exit game\n";
+      continue;
     }
 
     int path_choice = 0;
@@ -201,18 +224,6 @@ void rpg::Game::processGame()
 
       battle.startBattle();
       std::cout << battle.showBattleStatus();
-
-      std::unordered_map< std::string, rpg::cmd_t > battle_cmds;
-      battle_cmds["save"] = [](std::istream&, std::ostream& out, rpg::HeroAccount& acc) {
-        rpg::SaveManager::save(acc);
-        out << "GAME SAVED\n";
-      };
-      battle_cmds["exit-to-menu"] = [](std::istream&, std::ostream& out, rpg::HeroAccount& acc) {
-        rpg::SaveManager::save(acc);
-        out << "Returning to menu...\n";
-      };
-      battle_cmds["hero-stats"] = rpg::pg::showHeroStats;
-      battle_cmds["show-commands"] = rpg::pg::showBattleCommands;
 
       while (!battle.isBattleOver()) {
         auto* current = battle.currentActor();
@@ -253,10 +264,25 @@ void rpg::Game::processGame()
           std::cout << "Skill> ";
           std::cin >> input;
 
-          if (battle_cmds.find(input) != battle_cmds.end()) {
-            battle_cmds.at(input)(std::cin, std::cout, account_);
-            if (input == "exit-to-menu")
-              return;
+          if (input == "exit-to-menu") {
+            account_.loadFromHeroes();
+            rpg::SaveManager::save(account_);
+            std::cout << "Returning to menu...\n";
+            return;
+          }
+          if (input == "exit") {
+            std::cout << "Exiting game...\n";
+            std::exit(0);
+          }
+          if (input == "hero-stats") {
+            rpg::pg::showHeroStats(std::cin, std::cout, account_);
+            continue;
+          }
+          if (input == "show-commands") {
+            std::cout << "  <skill_id>     - Use skill\n";
+            std::cout << "  hero-stats     - Show hero stats\n";
+            std::cout << "  exit-to-menu   - Exit to menu\n";
+            std::cout << "  exit           - Exit game\n";
             continue;
           }
 
@@ -282,10 +308,20 @@ void rpg::Game::processGame()
               std::cout << "Target> ";
               std::cin >> input;
 
-              if (battle_cmds.find(input) != battle_cmds.end()) {
-                battle_cmds.at(input)(std::cin, std::cout, account_);
-                if (input == "exit-to-menu")
-                  return;
+              if (input == "exit-to-menu") {
+                account_.loadFromHeroes();
+                rpg::SaveManager::save(account_);
+                std::cout << "Returning to menu...\n";
+                return;
+              }
+              if (input == "exit") {
+                std::cout << "Exiting game...\n";
+                std::exit(0);
+              }
+              if (input == "show-commands") {
+                std::cout << "  <target_id>    - Choose target\n";
+                std::cout << "  exit-to-menu   - Exit to menu\n";
+                std::cout << "  exit           - Exit game\n";
                 continue;
               }
 
@@ -306,10 +342,20 @@ void rpg::Game::processGame()
               std::cout << "Target> ";
               std::cin >> input;
 
-              if (battle_cmds.find(input) != battle_cmds.end()) {
-                battle_cmds.at(input)(std::cin, std::cout, account_);
-                if (input == "exit-to-menu")
-                  return;
+              if (input == "exit-to-menu") {
+                account_.loadFromHeroes();
+                rpg::SaveManager::save(account_);
+                std::cout << "Returning to menu...\n";
+                return;
+              }
+              if (input == "exit") {
+                std::cout << "Exiting game...\n";
+                std::exit(0);
+              }
+              if (input == "show-commands") {
+                std::cout << "  <target_id>    - Choose target\n";
+                std::cout << "  exit-to-menu   - Exit to menu\n";
+                std::cout << "  exit           - Exit game\n";
                 continue;
               }
 
@@ -338,6 +384,8 @@ void rpg::Game::processGame()
         std::cout << "VICTORY!\n";
         battle.endBattle();
         dungeon.clearRoom();
+
+        account_.current_dungeon_floor = dungeon.currentFloorIndex() + 2;
 
         int floor_num = dungeon.currentFloorIndex() + 1;
 
@@ -370,26 +418,52 @@ void rpg::Game::processGame()
           }
 
           if (!rewards.empty()) {
-            std::cout << "CHOOSE REWARD:\n";
-            for (size_t i = 0; i < rewards.size(); i++)
-              std::cout << "  " << (i + 1) << ". " << rewards[i]->getDescription() << "\n";
-            std::cout << "Reward> ";
-            std::cin >> input;
-            int rc = 0;
-            try {
-              rc = std::stoi(input);
-            } catch (...) {
-              rc = 1;
+            while (true) {
+              std::cout << "CHOOSE REWARD:\n";
+              for (size_t i = 0; i < rewards.size(); i++)
+                std::cout << "  " << (i + 1) << ". " << rewards[i]->getDescription() << "\n";
+              std::cout << "Reward> ";
+              std::cin >> input;
+
+              if (input == "exit-to-menu") {
+                account_.loadFromHeroes();
+                rpg::SaveManager::save(account_);
+                std::cout << "Returning to menu...\n";
+                return;
+              }
+              if (input == "exit") {
+                std::cout << "Exiting game...\n";
+                std::exit(0);
+              }
+              if (input == "show-commands") {
+                std::cout << "  <reward_number> - Choose reward\n";
+                std::cout << "  exit-to-menu    - Exit to menu\n";
+                std::cout << "  exit            - Exit game\n";
+                continue;
+              }
+
+              int rc = 0;
+              try {
+                rc = std::stoi(input);
+              } catch (...) {
+                std::cout << "<INVALID>\n";
+                continue;
+              }
+              if (rc >= 1 && rc <= (int)rewards.size()) {
+                rewards[rc - 1]->apply(*hero_ptr);
+                break;
+              }
+              std::cout << "<INVALID REWARD>\n";
             }
-            if (rc >= 1 && rc <= (int)rewards.size())
-              rewards[rc - 1]->apply(*hero_ptr);
           }
         }
 
+        account_.loadFromHeroes();
         rpg::SaveManager::save(account_);
       } else {
         std::cout << "DEFEAT!\n";
         battle.endBattle();
+        account_.loadFromHeroes();
         account_.failDungeon();
         rpg::SaveManager::save(account_);
         return;
@@ -403,6 +477,7 @@ void rpg::Game::processGame()
     } else {
       std::cout << "DUNGEON COMPLETED!\n";
       account_.completeDungeon();
+      account_.loadFromHeroes();
       rpg::SaveManager::save(account_);
       return;
     }

@@ -124,7 +124,7 @@ void rpg::HeroAccount::chooseDungeon(const std::string& dungeon_name)
 void rpg::HeroAccount::startDungeon()
 {
   if (active_dungeon.empty()) {
-    std::cout << "No dungeon chosen. Use 'choose-dungeon <name>' first\n";
+    std::cout << "No dungeon chosen.\n";
     return;
   }
 
@@ -150,7 +150,6 @@ void rpg::HeroAccount::startDungeon()
   dungeon_started = true;
 
   std::cout << "DUNGEON STARTED: " << active_dungeon << "\n";
-  std::cout << "Entering Floor 1...\n";
 }
 
 void rpg::HeroAccount::completeDungeon()
@@ -187,6 +186,7 @@ void rpg::HeroAccount::abandonDungeon()
 
   if (dungeon_started) {
     std::cout << "ABANDONING ACTIVE DUNGEON: " << active_dungeon << "\n";
+    loadFromHeroes();
     failDungeon();
   } else {
     std::cout << "ABANDONING CHOSEN DUNGEON: " << active_dungeon << "\n";
@@ -200,7 +200,6 @@ void rpg::HeroAccount::resetHeroes()
   party_ptrs.clear();
   for (auto& data : party) {
     auto hero = createHeroByClass(data.hero_class);
-    data.applyTo(*hero);
     party_ptrs.push_back(std::move(hero));
   }
 }

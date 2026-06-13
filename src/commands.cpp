@@ -46,7 +46,9 @@ void rpg::mmc::chooseDungeon(std::istream& in, std::ostream& out, rpg::HeroAccou
   std::string name;
   in >> std::quoted(name);
   account.chooseDungeon(name);
-  rpg::SaveManager::save(account);
+  if (account.hasDungeon()) {
+    rpg::SaveManager::save(account);
+  }
 }
 
 void rpg::mmc::abandonDungeon(std::istream&, std::ostream& out, rpg::HeroAccount& account)
@@ -362,7 +364,7 @@ void rpg::adm::modifyMode(std::istream& in, std::ostream& out)
   out << "║      show-path <stage> <path>                            ║\n";
   out << "║      add-monster <st> <p> <type> <lvl>                   ║\n";
   out << "║      remove-monster <st> <p> <idx>                       ║\n";
-  out << "║      change-reward <st> <p> <common|rare>                ║\n";
+  out << "║      change-reward <st> <p> <common|rare|epic|legendary> ║\n";
   out << "║      show-monsters                                       ║\n";
   out << "║      show-dungeon                                        ║\n";
   out << "║      exit-modify-mode                                    ║\n";
@@ -703,7 +705,7 @@ void rpg::adm::showModifyCommands(std::istream&, std::ostream& out)
   out << "  show-path <stage> <path>\n";
   out << "  add-monster <st> <p> <type> <lvl>\n";
   out << "  remove-monster <st> <p> <idx>\n";
-  out << "  change-reward <st> <p> <common|rare>\n";
+  out << "  change-reward <st> <p> <common|rare|epic|legendary>\n";
   out << "  show-monsters\n";
   out << "  show-dungeon\n";
   out << "  show-commands\n";

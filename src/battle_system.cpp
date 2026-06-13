@@ -3,6 +3,7 @@
 #include <sstream>
 #include <iomanip>
 #include <iostream>
+#include "random.hpp"
 #include "actor.hpp"
 #include "enemy.hpp"
 #include "skill_manager.hpp"
@@ -293,11 +294,15 @@ rpg::Actor* rpg::BattleSystem::findBestTargetForEnemy(rpg::Actor* enemy) const
     }
   }
 
-  rpg::Actor* lowest = alive[0];
+  rpg::Actor* highest_hp = alive[0];
   for (auto* h : alive)
-    if (h->getStats().getCurrentHealth() < lowest->getStats().getCurrentHealth())
-      lowest = h;
-  return lowest;
+    if (h->getStats().getCurrentHealth() > highest_hp->getStats().getCurrentHealth())
+      highest_hp = h;
+
+  if (rpg::Random::getFloat(0.0f, 1.0f) < 0.6f)
+    return highest_hp;
+
+  return alive[rpg::Random::getInt(0, alive.size() - 1)];
 }
 
 size_t rpg::BattleSystem::chooseBestSkillForEnemy(rpg::Actor* enemy) const

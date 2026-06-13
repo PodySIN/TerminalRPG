@@ -55,6 +55,8 @@ namespace rpg {
     size_t current_stage = 1;
     HeroAccount() = default;
     HeroAccount(const std::string& name);
+    HeroAccount(HeroAccount&&) = default;
+    HeroAccount& operator=(HeroAccount&&) = default;
 
     std::vector< UnitSaveData > party;
     std::vector< std::unique_ptr< Hero > > party_ptrs;
@@ -62,11 +64,10 @@ namespace rpg {
     void applyToHeroes();
     void loadFromHeroes();
 
-    // Данжи
     std::vector< DungeonProgress > dungeon_stats;
-    std::string active_dungeon; // Выбранный или активный данж ("" = ничего)
+    std::string active_dungeon;
     size_t current_dungeon_floor = 1;
-    bool dungeon_started = false; // Начата ли игра? (герои сброшены)
+    bool dungeon_started = false;
 
     DungeonProgress* findDungeonStats(const std::string& name);
     void chooseDungeon(const std::string& dungeon_name);
